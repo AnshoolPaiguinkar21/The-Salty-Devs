@@ -1,0 +1,10 @@
+# Ignore build output and dependencies
+/client/.next
+/client/node_modules
+/server/node_modules
+/server/dist
+
+# Ignore package-lock files
+package-lock.json
+client/package-lock.json
+server/package-lock.json
