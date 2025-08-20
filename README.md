@@ -104,5 +104,5 @@ This project is a monorepo containing two separate packages:
 
 ## 👥 Authors
 
-  * **Frontend:** [Rhythm Naik](https://www.google.com/search?q=https://github.com/Rhythmstay4u)
-  * **Backend:** [Anshool Paiguinkar](https://www.google.com/search?q=https://github.com/colleague-username)
+  * **Frontend:** [Rhythm Naik](https://github.com/Rhythmstay4u)
+  * **Backend:** [Anshool Paiguinkar](https://github.com/colleague-username)
