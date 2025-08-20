@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Server for 'The Salty Devs' Blog app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anshoolp-endure/The-Salty-Devs.git"
+  },
+  "author": "Anshool Paiguinkar and Rhythm Naik",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anshoolp-endure/The-Salty-Devs/issues"
+  },
+  "homepage": "https://github.com/anshoolp-endure/The-Salty-Devs#readme"
+}
