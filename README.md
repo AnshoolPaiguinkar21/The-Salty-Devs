@@ -1,6 +1,4 @@
 
------
-
 # The Salty Devs
 
 A personal blog and portfolio CMS, built from scratch on the sunny coast of Goa. 🌴
