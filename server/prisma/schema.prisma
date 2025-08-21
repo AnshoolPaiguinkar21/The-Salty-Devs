@@ -13,3 +13,53 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model User {
+  id  Int @id @default(autoincrement())
+  email String  @unique
+  password  String
+  name  String?
+  role  Role  @default(USER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bio String?
+  posts Post[]
+  comments Comment[]
+}
+
+model Post {
+  id  Int @id @default(autoincrement())
+  title String
+  content  String?
+  published Boolean @default(false)
+  author  User  @relation(fields: [authorId], references: [id])
+  authorId  Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  publishedAt DateTime?
+  imageURL  String?
+  views Int @default(0)
+  comments  Comment[]
+  category Category[]
+}
+
+model Comment {
+  id  Int @id  @default(autoincrement())
+  content String
+  createdAt DateTime  @default(now())
+  author  User  @relation(fields: [authorId], references: [id])
+  authorId  Int
+  post  Post  @relation(fields: [postId], references: [id])
+  postId  Int
+}
+
+model Category {
+  id  Int @id @default(autoincrement())
+  name  String
+  posts Post[]
+}
