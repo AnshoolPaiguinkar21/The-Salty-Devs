@@ -1,4 +1,5 @@
-import Link from "next/link";
+import Footer from "@/components/footer/page";
+import Navbar from "@/components/navbar/page";
 
 const mockPosts = [
   {
@@ -23,23 +24,9 @@ const mockPosts = [
 
 export default function Home() {
   return (
-    <main className="py-10">
-      <div className="text-center mb-16">
-        <h1 className="text-5xl font-bold tracking-tighter header-text">From the Command Line</h1>
-        <p className="mt-4 text-lg subtle-text max-w-2xl mx-auto">Notes on building modern software, from backend architecture to frontend performance.</p>
-      </div>
-
-      <div className="space-y-8">
-        {mockPosts.map((post) => (
-          <Link href={`/posts/${post.slug}`} key={post.slug} className="block p-8 rounded-xl card-hover-border">
-            <div className="flex flex-col md:flex-row md:items-center justify-between">
-              <h2 className="text-2xl font-bold header-text">{post.title}</h2>
-              <p className="md:ml-4 mt-2 md:mt-0 text-sm subtle-text flex-shrink-0">{post.date}</p>
-            </div>
-            <p className="mt-3 body-text">{post.excerpt}</p>
-          </Link>
-        ))}
-      </div>
+    <main className="h-screen flex flex-col justify-between">
+      <Navbar />
+      <Footer />
     </main>
   );
 }
