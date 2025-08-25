@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu';
-import { DarkModeToggle } from '@/components/DarkModeToggle/page';
+import DarkModeToggle from '@/components/DarkModeToggle/page';
 import Link from 'next/link';
 
 const Navbar = () => {
@@ -16,18 +8,18 @@ const Navbar = () => {
       <div className="text-white text-3xl flex gap-4 items-center hover:text-blue-400">
         <Link href="/">The Salty Devs</Link>
       </div>
-      <div>
-        <NavigationMenu>
-          <NavigationMenuList className="flex gap-10">
-            <NavigationMenuItem>
-              <NavigationMenuTrigger>Home</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <NavigationMenuLink>Home</NavigationMenuLink>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
-      </div>
+      <nav>
+        <ul className="flex gap-10">
+          <li>
+            <Link
+              href="/"
+              className="text-white hover:text-blue-400 transition-colors"
+            >
+              Home
+            </Link>
+          </li>
+        </ul>
+      </nav>
       <DarkModeToggle />
     </div>
   );
