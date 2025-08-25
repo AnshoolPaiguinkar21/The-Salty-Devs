@@ -12,31 +12,23 @@ import Link from 'next/link';
 
 const Navbar = () => {
   return (
-    <div className="bg-gray-500 p-4 flex justify-between items-center">
-      <div className="text-white text-2xl">
+    <div className="bg-gray-500 p-4 px-10 flex justify-between items-center gap-10">
+      <div className="text-white text-3xl flex gap-4 items-center hover:text-blue-400">
         <Link href="/">The Salty Devs</Link>
       </div>
-      <div className="flex gap-4">
-        <div>
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>Home</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <NavigationMenuLink>Home</NavigationMenuLink>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>About</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <NavigationMenuLink>About</NavigationMenuLink>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-        </div>
-        <DarkModeToggle />
+      <div>
+        <NavigationMenu>
+          <NavigationMenuList className="flex gap-10">
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Home</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <NavigationMenuLink>Home</NavigationMenuLink>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
       </div>
+      <DarkModeToggle />
     </div>
   );
 };
