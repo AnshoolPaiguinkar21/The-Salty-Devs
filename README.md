@@ -41,52 +41,44 @@ To get a local copy up and running, follow these simple steps.
     cd the-salty-devs
     ```
 
-2.  **Set up the Backend Server:**
-
-      * Navigate to the server directory:
-        ```sh
-        cd server
-        ```
-      * Install NPM packages:
-        ```sh
-        npm install
-        ```
-      * Create a `.env` file by copying the example:
-        ```sh
-        cp .env.example .env
-        ```
-      * Update the `DATABASE_URL` in your new `.env` file with your PostgreSQL connection string.
-      * Run the Prisma migration to create the database tables:
-        ```sh
-        npx prisma migrate dev
-        ```
-
-3.  **Set up the Frontend Client:**
-
-      * Navigate to the client directory from the root:
-        ```sh
-        cd client
-        ```
-      * Install NPM packages:
-        ```sh
-        npm install
-        ```
-
-### Running the Application
-
-This project is set up to run both the client and server concurrently with a single command from the **root directory**.
-
-1.  **Navigate to the root `the-salty-devs` folder.**
-2.  **Install root dependencies (if you haven't already):**
+2.  **Install root dependencies:**
     ```sh
     npm install
     ```
-3.  **Run the development servers:**
+
+3.  **Install all project dependencies and generate Prisma client:**
     ```sh
-    npm run dev
+    npm run iall
     ```
-      * The Next.js client will be available at `http://localhost:3000`.
-      * The Express.js server will be running at `http://localhost:3001`.
+    This command will:
+    - Install server dependencies
+    - Install client dependencies
+    - Generate the Prisma client for database access
+
+4.  **Set up environment variables:**
+    - Navigate to the server directory and create a `.env` file:
+      ```sh
+      cd server
+      cp .env.example .env
+      ```
+    - Update the `DATABASE_URL` in your `.env` file with your PostgreSQL connection string
+    - Run Prisma migration to create database tables:
+      ```sh
+      npx prisma migrate dev
+      cd ..
+      ```
+
+### Running the Application
+
+From the **root directory**, run:
+
+```sh
+npm run dev
+```
+
+This will start both the client and server concurrently:
+- **Next.js client**: `http://localhost:3000`
+- **Express.js server**: `http://localhost:3001`
 
 -----
 
