@@ -1,5 +1,5 @@
 import React from 'react';
-import DarkModeToggle from '@/components/DarkModeToggle/page';
+import DarkModeToggle from '@/components/navbar/DarkModeToggle/page';
 import Link from 'next/link';
 
 const Navbar = () => {
