@@ -23,7 +23,7 @@ export const fetchUser = async (req, res) => {
     })
 
     if(!fetchUser){
-        return res.status(404).json({message: "User doesn't exist"})
+        //return res.status(404).json({message: "User doesn't exist"})
     }
 
     return res.json({status:200, data:fetchUser, message: "User data fetched"})
@@ -81,3 +81,11 @@ export const deleteUser = async (req, res) => {
 
     return res.json({status: 200, message: "User deleted successfully"})
 }
+
+// object:{
+//     200: "OK",
+//     404:  //catch at top level and return appropriate status code, create enums for every status code, when throwing error require
+//  1. enum type 2. message 
+// Create enums for every status code: Catch errors at top-level 
+// and require- 1. enum type, and 2. message, when throwing an error for returning appropriate status code
+// }

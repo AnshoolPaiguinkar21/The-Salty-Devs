@@ -21,6 +21,7 @@ enum Role {
 
 model User {
   id        Int       @id @default(autoincrement())
+  // id        String    @id @default(uuid())
   email     String    @unique
   password  String
   name      String?
@@ -38,7 +39,7 @@ model Post {
   content     String?
   published   Boolean    @default(false)
   author      User       @relation(fields: [authorId], references: [id])
-  authorId    Int
+  authorId    Int //String
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   publishedAt DateTime?
@@ -53,7 +54,7 @@ model Comment {
   content   String
   createdAt DateTime @default(now())
   author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
+  authorId  Int //String
   post      Post     @relation(fields: [postId], references: [id])
   postId    Int
 }
