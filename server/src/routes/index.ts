@@ -1,6 +1,6 @@
 import {Router} from "express"
 
-import UserRoutes from "./userRoutes.js"
+import UserRoutes from "../api/User/user.routes.ts"
 
 const router = Router()
 
