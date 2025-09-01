@@ -10,7 +10,7 @@
     "dev": "concurrently \"npm:dev:server\" \"npm:dev:client\""
   },
   "dependencies": {
-    "concurrently": "^9.2.0",
+    "concurrently": "^9.2.1",
     "lucide-react": "^0.542.0"
   }
 }
