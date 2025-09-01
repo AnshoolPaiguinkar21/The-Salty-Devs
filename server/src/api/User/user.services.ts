@@ -1,11 +1,11 @@
 import {db} from "../../utils/db.config.ts"
 
 export type User = {
-    id: number;
-    name: string | null;
+    id: number ;
+    name: string;
     email:string;
     password: string;
-    bio: string;
+    bio: string | null;
 }
 
 export const fetchUsers = async (): Promise<User[]> => {
