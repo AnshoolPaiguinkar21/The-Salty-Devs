@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
     "start": "node src/server.ts",
-    "dev": "nodemon src/server.ts",
+    "dev": "nodemon --watch src --ext ts --exec ts-node-esm src/server.ts",
     "prisma:generate": "npx prisma generate"
   },
   "repository": {
