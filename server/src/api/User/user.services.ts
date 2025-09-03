@@ -1,4 +1,6 @@
 import {db} from "../../utils/db.config.ts"
+import { AppError } from "../../utils/appError.ts";
+import { HttpStatusCodes } from "../../utils/httpStatusCodes.ts";
 
 export type User = {
     id: number ;
@@ -40,7 +42,8 @@ export const createUser = async (user: Omit<User, "id">): Promise<User> => {
     });
 
     if(findUser){
-        throw new Error("User already exists");
+        throw new AppError("Email already exists.", HttpStatusCodes.CONFLICT);
+        //throw new Error("User already exists");
     }
 
     return db.user.create({
