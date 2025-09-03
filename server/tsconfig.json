@@ -1,6 +1,49 @@
-// GPT generated
+// Gemini script
 
 {
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2020"],
+    "outDir": "build",
+    "rootDir": "src",
+
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    "resolveJsonModule": true,
+    
+    // The "verbatimModuleSyntax" and "isolatedModules" options can cause issues
+    // with certain TypeScript features like enums in a ts-node environment.
+    // Removing them allows ts-node to correctly transpile the code.
+    // "verbatimModuleSyntax": true,
+    // "isolatedModules": true,
+
+    // Optional: if using path aliases
+    "baseUrl": "./src",
+    "paths": {
+      "@api/*": ["api/*"],
+      "@routes/*": ["routes/*"],
+      "@modules/*": ["modules/*"],
+      "@utils/*": ["utils/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "build"]
+}
+
+
+
+
+// GPT generated
+
+/*{
   "compilerOptions": {
     "target": "ES2020",
     "module": "NodeNext",
@@ -24,6 +67,7 @@
     // Optional: if using path aliases
     "baseUrl": "./src",
     "paths": {
+      "@api/*": ["api/*"],
       "@routes/*": ["routes/*"],
       "@modules/*": ["modules/*"],
       "@utils/*": ["utils/*"]
@@ -31,7 +75,7 @@
   },
   "include": ["src"],
   "exclude": ["node_modules", "build"]
-}
+} */
 
 
 
