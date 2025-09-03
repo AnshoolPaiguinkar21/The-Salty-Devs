@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
+import React from 'react';
 import { ThemeProvider } from 'next-themes';
+import Header from '@/components/header/page';
+import Footer from '@/components/footer/page';
 import '../styles/globals.css';
 
 export const metadata: Metadata = {
@@ -21,7 +24,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="min-h-screen flex flex-col">
+            <Header />
+            <main className="flex-1 pt-20">{children}</main>
+            <Footer />
+          </div>
         </ThemeProvider>
       </body>
     </html>

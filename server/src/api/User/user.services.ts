@@ -1,79 +1,92 @@
-import {db} from "../../utils/db.config.ts"
-import { AppError } from "../../utils/appError.ts";
-import { HttpStatusCodes } from "../../utils/httpStatusCodes.ts";
+import { db } from '../../utils/db.config.ts';
+import { AppError } from '../../utils/appError.ts';
+import { HttpStatusCodes } from '../../utils/httpStatusCodes.ts';
 
 export type User = {
-    id: number ;
-    name: string;
-    email:string;
-    password: string;
-    bio: string | null;
-}
+  id: number;
+  name: string | null;
+  email: string;
+  password: string;
+  bio: string | null;
+};
 
-export const fetchUsers = async (): Promise<User[]> => {
-    return db.user.findMany({
-        select: {
-            name: true, 
-            email:true,
-            bio: true,
-        },
-        orderBy : {
-            id: 'asc',
-        }
-    })
-}
+export type UserResponse = {
+  id: number;
+  name: string | null;
+  email: string;
+  bio: string | null;
+};
 
-export const fetchUser = async (id: number): Promise<User | null> => {
-    return db.user.findUnique({
-        where : { id, },
-        select : {
-            name: true, email:true, bio:true,
-        }
-    })
-}
+export const fetchUsers = async (): Promise<UserResponse[]> => {
+  return db.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      bio: true,
+    },
+    orderBy: {
+      id: 'asc',
+    },
+  });
+};
 
-export const createUser = async (user: Omit<User, "id">): Promise<User> => {
+export const fetchUser = async (id: number): Promise<UserResponse | null> => {
+  return db.user.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      bio: true,
+    },
+  });
+};
 
-    const {name,email,password} = user;
-    const findUser = await db.user.findUnique({
-        where: {
-            email,
-        }
-    });
+export const createUser = async (user: Omit<User, 'id'>): Promise<User> => {
+  const { name, email, password } = user;
+  const findUser = await db.user.findUnique({
+    where: {
+      email,
+    },
+  });
 
-    if(findUser){
-        throw new AppError("Email already exists.", HttpStatusCodes.CONFLICT);
-        //throw new Error("User already exists");
-    }
+  if (findUser) {
+    throw new AppError('Email already exists.', HttpStatusCodes.CONFLICT);
+    //throw new Error("User already exists");
+  }
 
-    return db.user.create({
-        data : {
-            name,
-            email,
-            password,
-        }
-    });
-}
+  return db.user.create({
+    data: {
+      name,
+      email,
+      password,
+    },
+  });
+};
 
-export const updateUser = async (id: number, user: Omit<User, "id">): Promise<User> => {
-    const {name,email,password} = user;
-    return db.user.update({
-        where : {
-            id,
-        },
-        data : {
-            name,
-            email,
-            password,
-        }
-    });
-}
+export const updateUser = async (
+  id: number,
+  user: Omit<User, 'id'>
+): Promise<User> => {
+  const { name, email, password } = user;
+  return db.user.update({
+    where: {
+      id,
+    },
+    data: {
+      name,
+      email,
+      password,
+    },
+  });
+};
 
-export const deleteUser = async (id:number, user: Omit<User, "id">): Promise<void> => {
-    return db.user.delete({
-        where: { id, }
-    });
-}
+export const deleteUser = async (id: number): Promise<void> => {
+  await db.user.delete({
+    where: { id },
+  });
+};
 
 /*export const fetchUsers = async (req: Request, res: Response) => {
 
