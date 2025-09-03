@@ -1,120 +1,138 @@
-import {db} from "../../utils/db.config.ts";
-import type {User} from "../User/user.services.ts"
-import type {PostRead} from "../Post/post.services.ts"
+import { db } from '../../utils/db.config.ts';
+import type { PostResponse } from '../Post/post.services.ts';
 
 export type CategoryView = {
-    id : number,
-    name: string,
-    post : PostRead,
-}
+  id: number;
+  name: string;
+  posts: PostResponse[];
+};
 
 export type CategoryAdd = {
-    name: string,
-}
+  name: string;
+};
 
-export const getComments = async (): Promise<CategoryView[]> => {
-
-    return db.comment.findMany({
+export const getCategories = async (): Promise<CategoryView[]> => {
+  return db.category.findMany({
+    select: {
+      id: true,
+      name: true,
+      posts: {
         select: {
-            id: true,
-            name: true,
-            createdAt: true,
-            author: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                },
+          id: true,
+          title: true,
+          content: true,
+          publishedAt: true,
+          updatedAt: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
             },
-            post: {
-                select: {
-                    id: true,
-                    title: true,
-                }
-            }
+          },
         },
-        orderBy: { id: "asc", }
-    })
-}
+      },
+    },
+    orderBy: { id: 'asc' },
+  });
+};
 
-export const getComment = async (id: number): Promise<CategoryView | null> => {
-    return db.comment.findUnique({
-        where: {id},
+export const getCategory = async (id: number): Promise<CategoryView | null> => {
+  return db.category.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+      posts: {
         select: {
-            id: true,
-            content: true,
-            createdAt: true,
-            author: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                }
-            }
-        }
-    })
-}
-
-export const addComment = async (comment: CategoryAdd): Promise<CategoryView> => {
-    const {postId, authorId, content, createdAt} = comment;
-    const parsedDate: Date = new Date(createdAt);
-
-    return db.comment.create({
-        data: {
-            postId,
-            authorId,
-            content,
-            createdAt: parsedDate,
+          id: true,
+          title: true,
+          content: true,
+          publishedAt: true,
+          updatedAt: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
         },
+      },
+    },
+  });
+};
+
+export const addCategory = async (
+  category: CategoryAdd
+): Promise<CategoryView> => {
+  const { name } = category;
+
+  return db.category.create({
+    data: {
+      name,
+    },
+    select: {
+      id: true,
+      name: true,
+      posts: {
         select: {
-            id:true,
-            content:true,
-            createdAt:true,
-            author: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    bio: true,
-                }
-            }
-        }
-    });
-}
+          id: true,
+          title: true,
+          content: true,
+          publishedAt: true,
+          updatedAt: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};
 
-export const editComment = async (id: number, comment: CategoryAdd): Promise<CategoryView> => {
-    
-    const {postId, authorId, content, createdAt} = comment;
-    const parsedDate: Date = new Date(createdAt);
-    
-    return db.comment.update({
-        where: {
-            id
-        },
-        data: {
-            postId,
-            authorId,
-            content,
-            createdAt,
-        },
+export const editCategory = async (
+  id: number,
+  category: CategoryAdd
+): Promise<CategoryView> => {
+  const { name } = category;
+
+  return db.category.update({
+    where: {
+      id,
+    },
+    data: {
+      name,
+    },
+    select: {
+      id: true,
+      name: true,
+      posts: {
         select: {
-            id:true,
-            content:true,
-            createdAt:true,
-            author: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    bio: true,
-                }
-            }
-        }
-    })
-}
+          id: true,
+          title: true,
+          content: true,
+          publishedAt: true,
+          updatedAt: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};
 
-export const deleteComment = async (id: number): Promise<void> => {
-    return db.post.delete({
-        where: {id}
-    })
-}
+export const deleteCategory = async (id: number): Promise<void> => {
+  await db.category.delete({
+    where: { id },
+  });
+};
