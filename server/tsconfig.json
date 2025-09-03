@@ -8,6 +8,8 @@
     "lib": ["ES2020"],
     "outDir": "build",
     "rootDir": "src",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
 
     "strict": true,
     "esModuleInterop": true,
@@ -18,7 +20,7 @@
     "declarationMap": true,
 
     "resolveJsonModule": true,
-    
+
     // The "verbatimModuleSyntax" and "isolatedModules" options can cause issues
     // with certain TypeScript features like enums in a ts-node environment.
     // Removing them allows ts-node to correctly transpile the code.
@@ -37,9 +39,6 @@
   "include": ["src"],
   "exclude": ["node_modules", "build"]
 }
-
-
-
 
 // GPT generated
 
@@ -76,8 +75,6 @@
   "include": ["src"],
   "exclude": ["node_modules", "build"]
 } */
-
-
 
 /* Original script
 
