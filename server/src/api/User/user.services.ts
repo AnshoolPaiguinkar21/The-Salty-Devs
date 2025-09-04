@@ -1,17 +1,17 @@
-import { db } from '../../utils/db.config.ts';
-import { AppError } from '../../utils/appError.ts';
-import { HttpStatusCodes } from '../../utils/httpStatusCodes.ts';
+import { db } from '@utils/db.config.ts';
+import { AppError } from '@utils/appError.ts';
+import { HttpStatusCodes } from '@utils/httpStatusCodes.ts';
 
 export type User = {
-  id: number;
+  id: string;
   name: string | null;
   email: string;
   password: string;
-  bio: string | null;
+  bio?: string | null;
 };
 
 export type UserResponse = {
-  id: number;
+  id: string;
   name: string | null;
   email: string;
   bio: string | null;
@@ -31,9 +31,9 @@ export const fetchUsers = async (): Promise<UserResponse[]> => {
   });
 };
 
-export const fetchUser = async (id: number): Promise<UserResponse | null> => {
+export const fetchUser = async (id: string): Promise<UserResponse | null> => {
   return db.user.findUnique({
-    where: { id },
+    where: { id: id },
     select: {
       id: true,
       name: true,
@@ -44,7 +44,7 @@ export const fetchUser = async (id: number): Promise<UserResponse | null> => {
 };
 
 export const createUser = async (user: Omit<User, 'id'>): Promise<User> => {
-  const { name, email, password } = user;
+  const { name, email, password, bio } = user;
   const findUser = await db.user.findUnique({
     where: {
       email,
@@ -61,30 +61,32 @@ export const createUser = async (user: Omit<User, 'id'>): Promise<User> => {
       name,
       email,
       password,
+      bio
     },
   });
 };
 
 export const updateUser = async (
-  id: number,
+  id: string,
   user: Omit<User, 'id'>
 ): Promise<User> => {
-  const { name, email, password } = user;
+  const { name, email, password, bio } = user;
   return db.user.update({
     where: {
-      id,
+      id: id,
     },
     data: {
       name,
       email,
       password,
+      bio
     },
   });
 };
 
-export const deleteUser = async (id: number): Promise<void> => {
+export const deleteUser = async (id: string): Promise<void> => {
   await db.user.delete({
-    where: { id },
+    where: { id: id },
   });
 };
 
