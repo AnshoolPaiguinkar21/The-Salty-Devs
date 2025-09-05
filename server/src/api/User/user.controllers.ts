@@ -3,6 +3,29 @@ import {body, validationResult} from "express-validator"
 import * as UserService from "./user.services.ts"
 import { HttpStatusCodes } from "@utils/httpStatusCodes.ts"
 
+
+export const signinUser = async (req: Request, res: Response) => {
+    
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(HttpStatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+    }
+
+    try {
+        const existingUser = await UserService.signinUser(req.body);
+        return res.status(HttpStatusCodes.OK).json(existingUser);
+    }
+    catch(error: any){
+        if (error.message.includes("Invalid Credentials. Please try again")){
+            return res.status(HttpStatusCodes.UNAUTHORIZED).json({message: error.message});
+        }
+        else if (error.message.includes("User does not exist")){
+            return res.status(HttpStatusCodes.NOT_FOUND).json({message: error.message});
+        }
+        return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
+    }
+}
+
 export const fetchUsers = async (req: Request, res: Response) => {
     try {
         const users = await UserService.fetchUsers();
