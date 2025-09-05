@@ -1,27 +1,51 @@
 import type { Request, Response } from "express";
 import {body, validationResult} from "express-validator"
 import * as UserService from "./user.services.ts"
+import { HttpStatusCodes } from "@utils/httpStatusCodes.ts"
+
+
+export const signinUser = async (req: Request, res: Response) => {
+    
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(HttpStatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+    }
+
+    try {
+        const existingUser = await UserService.signinUser(req.body);
+        return res.status(HttpStatusCodes.OK).json(existingUser);
+    }
+    catch(error: any){
+        if (error.message.includes("Invalid Credentials. Please try again")){
+            return res.status(HttpStatusCodes.UNAUTHORIZED).json({message: error.message});
+        }
+        else if (error.message.includes("User does not exist")){
+            return res.status(HttpStatusCodes.NOT_FOUND).json({message: error.message});
+        }
+        return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
+    }
+}
 
 export const fetchUsers = async (req: Request, res: Response) => {
     try {
         const users = await UserService.fetchUsers();
-        return res.status(200).json(users);
+        return res.status(HttpStatusCodes.OK).json(users);
     }  
     catch(error: any){
-        return res.status(500).json(error.message);
+        return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
     }
 }
 
 export const fetchUser = async (req: Request, res: Response) => {
 
-    const id: number = parseInt(req.params.id, 10);
+    const id: string = req.params.id;
 
     try{
         const user = await UserService.fetchUser(id);
-        return res.status(200).json(user);
+        return res.status(HttpStatusCodes.OK).json(user);
     }
     catch(error: any) {
-        return res.status(500).json(error.message)
+        return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
     }
 }
  
@@ -29,18 +53,18 @@ export const createUser = async (req: Request, res: Response) => {
     
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(HttpStatusCodes.BAD_REQUEST).json({ errors: errors.array() });
     }
 
     try {
         const newUser = await UserService.createUser(req.body);
-        return res.status(201).json(newUser);
+        return res.status(HttpStatusCodes.CREATED).json(newUser);
     }
     catch(error: any){
         if (error.message.includes("User already exists")){
-            return res.status(409).json({status: 409, message: error.message});
+            return res.status(HttpStatusCodes.CONFLICT).json({status: 409, message: error.message});
         }
-        return res.status(500).json(error.message)
+        return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
     }
 }
 
@@ -48,28 +72,28 @@ export const updateUser = async (req: Request, res: Response) => {
 
                 const errors = validationResult(req);
                 if (!errors.isEmpty()) {
-                return res.status(400).json({ errors: errors.array() });
+                return res.status(HttpStatusCodes.BAD_REQUEST).json({ errors: errors.array() });
                 }
 
-                const id: number = parseInt(req.params.id, 10);
+                const id: string = req.params.id;
                 try {
                     const updatedUserData = await UserService.updateUser(id, req.body);
-                    return res.status(200).json(updatedUserData);
+                    return res.status(HttpStatusCodes.OK).json(updatedUserData);
 
                 }
                 catch(error: any){
-                    return res.status(500).json(error.message);
+                    return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
                 }
             }
 
 export const deleteUser = async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+    const id: string = req.params.id;
     try {
         await UserService.deleteUser(id);
-        return res.status(204).send("User Deleted")
+        return res.status(HttpStatusCodes.NO_CONTENT).send("User Deleted")
     }
     catch(error: any) {
-        return res.status(500).json(error.message)
+        return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
     }
 }
 

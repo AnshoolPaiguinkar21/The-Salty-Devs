@@ -1,8 +1,8 @@
-import { db } from '../../utils/db.config.ts';
+import { db } from '@utils/db.config.ts';
 import type { User } from '../User/user.services.ts';
 
 export type PostRead = {
-  id: number;
+  id: string;
   title: string;
   content: string;
   publishedAt: Date;
@@ -10,7 +10,7 @@ export type PostRead = {
 };
 
 export type PostResponse = {
-  id: number;
+  id: string;
   title: string;
   content: string | null;
   publishedAt: Date | null;
@@ -18,7 +18,7 @@ export type PostResponse = {
   createdAt?: Date;
   published?: boolean;
   author: {
-    id: number;
+    id: string;
     name: string | null;
     email: string;
     bio?: string | null;
@@ -29,7 +29,7 @@ export type PostUpload = {
   title: string;
   content: string;
   published: boolean;
-  authorId: number; //String
+  authorId: string; //String
   publishedAt: Date;
   updatedAt: Date;
   //imageURL: string,
@@ -52,13 +52,13 @@ export const getPosts = async (): Promise<PostResponse[]> => {
         },
       },
     },
-    orderBy: { id: 'asc' },
+    orderBy: { createdAt: 'asc' },
   });
 };
 
-export const getPost = async (id: number): Promise<PostResponse | null> => {
+export const getPost = async (id: string): Promise<PostResponse | null> => {
   return db.post.findUnique({
-    where: { id },
+    where: { id: id },
     select: {
       id: true,
       title: true,
@@ -108,7 +108,7 @@ export const createPost = async (post: PostUpload): Promise<PostResponse> => {
 };
 
 export const updatePost = async (
-  id: number,
+  id: string,
   post: PostUpload
 ): Promise<PostResponse> => {
   const { title, authorId, content, published, publishedAt, updatedAt } = post;
@@ -116,7 +116,7 @@ export const updatePost = async (
 
   return db.post.update({
     where: {
-      id,
+      id: id,
     },
     data: {
       title,
@@ -145,7 +145,7 @@ export const updatePost = async (
   });
 };
 
-export const deletePost = async (id: number): Promise<void> => {
+export const deletePost = async (id: string): Promise<void> => {
   await db.post.delete({
     where: { id },
   });

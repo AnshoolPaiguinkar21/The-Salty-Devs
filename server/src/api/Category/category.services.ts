@@ -1,8 +1,8 @@
-import { db } from '../../utils/db.config.ts';
-import type { PostResponse } from '../Post/post.services.ts';
+import { db } from '@utils/db.config.ts';
+import type { PostResponse } from '@api/Post/post.services.ts';
 
 export type CategoryView = {
-  id: number;
+  id: string;
   name: string;
   posts: PostResponse[];
 };
@@ -37,9 +37,9 @@ export const getCategories = async (): Promise<CategoryView[]> => {
   });
 };
 
-export const getCategory = async (id: number): Promise<CategoryView | null> => {
+export const getCategory = async (id: string): Promise<CategoryView | null> => {
   return db.category.findUnique({
-    where: { id },
+    where: { id: id },
     select: {
       id: true,
       name: true,
@@ -96,14 +96,14 @@ export const addCategory = async (
 };
 
 export const editCategory = async (
-  id: number,
+  id: string,
   category: CategoryAdd
 ): Promise<CategoryView> => {
   const { name } = category;
 
   return db.category.update({
     where: {
-      id,
+      id: id,
     },
     data: {
       name,
@@ -131,7 +131,7 @@ export const editCategory = async (
   });
 };
 
-export const deleteCategory = async (id: number): Promise<void> => {
+export const deleteCategory = async (id: string): Promise<void> => {
   await db.category.delete({
     where: { id },
   });

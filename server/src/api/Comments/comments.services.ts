@@ -1,28 +1,28 @@
-import { db } from '../../utils/db.config.ts';
-import type { User } from '../User/user.services.ts';
-import type { PostRead } from '../Post/post.services.ts';
+import { db } from '@utils/db.config.ts';
+import type { User } from '@api/User/user.services.ts';
+import type { PostRead } from '@api/Post/post.services.ts';
 
 export type CommentRead = {
-  id: number;
+  id: string;
   content: string;
   createdAt: Date;
   author: User;
-  authorId: number; //string
+  authorId: string;
   post: PostRead;
-  postId: number; //string
+  postId: string; 
 };
 
 export type CommentResponse = {
-  id: number;
+  id: string;
   content: string;
   createdAt: Date;
   author: {
-    id: number;
+    id: string;
     name: string | null;
     email: string;
   };
   post?: {
-    id: number;
+    id: string;
     title: string;
   };
 };
@@ -31,9 +31,9 @@ export type CommentAdd = {
   content: string;
   createdAt: Date;
   // author: User,
-  authorId: number; //string
+  authorId: string; //number
   // post : PostRead,
-  postId: number; //string
+  postId: string; //number
 };
 
 export const getComments = async (): Promise<CommentResponse[]> => {
@@ -56,15 +56,15 @@ export const getComments = async (): Promise<CommentResponse[]> => {
         },
       },
     },
-    orderBy: { id: 'asc' },
+    orderBy: { createdAt: 'asc' },
   });
 };
 
 export const getComment = async (
-  id: number
+  id: string
 ): Promise<CommentResponse | null> => {
   return db.comment.findUnique({
-    where: { id },
+    where: { id: id },
     select: {
       id: true,
       content: true,
@@ -109,7 +109,7 @@ export const addComment = async (
 };
 
 export const editComment = async (
-  id: number,
+  id: string,
   comment: CommentAdd
 ): Promise<CommentResponse> => {
   const { postId, authorId, content, createdAt } = comment;
@@ -139,7 +139,7 @@ export const editComment = async (
   });
 };
 
-export const deleteComment = async (id: number): Promise<void> => {
+export const deleteComment = async (id: string): Promise<void> => {
   await db.comment.delete({
     where: { id },
   });
