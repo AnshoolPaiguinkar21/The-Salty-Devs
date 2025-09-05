@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
-import { Book, Menu, Sunset, Trees, Zap } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
