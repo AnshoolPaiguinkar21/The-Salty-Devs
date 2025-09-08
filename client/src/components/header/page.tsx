@@ -70,13 +70,13 @@ const Header = ({
   },
 }: HeaderProps) => {
   return (
-    <section className="py-4 bg-amber-400">
-      <div className="container mx-auto w-full bg-blue-600">
+    <section className="py-4">
+      <div className="container mx-auto w-full">
         {/* Desktop Menu */}
         <nav className="hidden justify-between lg:flex w-full">
           <div className="flex items-center gap-6">
             {/* Logo */}
-            <a href={logo.url} className="flex items-center gap-2 bg-red-600">
+            <a href={logo.url} className="flex items-center gap-2">
               <span className="text-3xl font-bold tracking-tighter">
                 {logo.title}
               </span>
