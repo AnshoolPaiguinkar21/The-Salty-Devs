@@ -24,6 +24,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import DarkModeToggle from './DarkModeToggle/page';
 
 interface MenuItem {
   title: string;
@@ -69,14 +70,14 @@ const Header = ({
   },
 }: HeaderProps) => {
   return (
-    <section className="py-4">
-      <div className="container">
+    <section className="py-4 bg-amber-400">
+      <div className="container mx-auto w-full bg-blue-600">
         {/* Desktop Menu */}
-        <nav className="hidden justify-between lg:flex w-screen ">
+        <nav className="hidden justify-between lg:flex w-full">
           <div className="flex items-center gap-6">
             {/* Logo */}
-            <a href={logo.url} className="flex items-center gap-2">
-              <span className="text-lg font-semibold tracking-tighter">
+            <a href={logo.url} className="flex items-center gap-2 bg-red-600">
+              <span className="text-3xl font-bold tracking-tighter">
                 {logo.title}
               </span>
             </a>
@@ -95,6 +96,7 @@ const Header = ({
             <Button asChild size="sm">
               <a href={auth.signup.url}>{auth.signup.title}</a>
             </Button>
+            <DarkModeToggle />
           </div>
         </nav>
 
