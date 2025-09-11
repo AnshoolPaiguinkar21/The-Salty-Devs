@@ -47,7 +47,13 @@ model Post {
   imageURL    String?
   views       Int        @default(0)
   comments    Comment[]
-  category    Category[]
+
+  // CORRECTED: A post has ONE category
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+
+  // NEW: A post can have MANY tags
+  tags        Tag[]
 }
 
 model Comment {
@@ -66,5 +72,14 @@ model Category {
   //id        Int       @id @default(autoincrement())
   id    String @id @default(uuid())
   name  String
+  posts Post[]
+}
+
+// NEW: Tag Model for many-to-many relationship
+model Tag {
+  //id        Int       @id @default(autoincrement())
+  id    String @id @default(uuid())
+  name  String @unique
+  slug  String @unique
   posts Post[]
 }

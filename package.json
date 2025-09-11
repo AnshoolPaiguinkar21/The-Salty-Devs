@@ -4,13 +4,19 @@
   "scripts": {
     "install:server": "npm install --prefix server",
     "install:client": "npm install --prefix client",
-    "iall": "npm run install:server && npm run install:client && npm run prisma:generate --prefix server",
+    "iall": "ncu -u --cwd server && ncu -u --cwd client && ncu -u && npm install && npm run install:server && npm run install:client && npm run prisma:generate --prefix server",
+    "iall:safe": "ncu -u --target minor --cwd server && ncu -u --target minor --cwd client && ncu -u --target minor && npm install && npm run install:server && npm run install:client && npm run prisma:generate --prefix server",
+    "iall:patch": "ncu -u --target patch --cwd server && ncu -u --target patch --cwd client && ncu -u --target patch && npm install && npm run install:server && npm run install:client && npm run prisma:generate --prefix server",
+    "check:updates": "ncu --cwd server && ncu --cwd client && ncu",
     "dev:server": "npm run dev --prefix server",
     "dev:client": "npm run dev --prefix client",
     "dev": "concurrently \"npm:dev:server\" \"npm:dev:client\""
   },
   "dependencies": {
     "concurrently": "^9.2.1",
-    "lucide-react": "^0.542.0"
+    "lucide-react": "^0.543.0"
+  },
+  "devDependencies": {
+    "npm-check-updates": "^18.1.0"
   }
 }

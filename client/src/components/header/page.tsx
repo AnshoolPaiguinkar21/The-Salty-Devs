@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
-import { Book, Menu, Sunset, Trees, Zap } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -25,6 +24,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import DarkModeToggle from './DarkModeToggle/page';
 
 interface MenuItem {
   title: string;
@@ -65,19 +65,19 @@ const Header = ({
     { title: 'About', url: '/about' },
   ],
   auth = {
-    login: { title: 'Login', url: '#' },
-    signup: { title: 'Sign up', url: '#' },
+    login: { title: 'Login', url: '/login' },
+    signup: { title: 'Sign up', url: '/signup' },
   },
 }: HeaderProps) => {
   return (
     <section className="py-4">
-      <div className="container">
+      <div className="container mx-auto w-full">
         {/* Desktop Menu */}
-        <nav className="hidden justify-between lg:flex w-screen ">
+        <nav className="hidden justify-between lg:flex w-full">
           <div className="flex items-center gap-6">
             {/* Logo */}
             <a href={logo.url} className="flex items-center gap-2">
-              <span className="text-lg font-semibold tracking-tighter">
+              <span className="text-3xl font-bold tracking-tighter">
                 {logo.title}
               </span>
             </a>
@@ -96,6 +96,7 @@ const Header = ({
             <Button asChild size="sm">
               <a href={auth.signup.url}>{auth.signup.title}</a>
             </Button>
+            <DarkModeToggle />
           </div>
         </nav>
 
