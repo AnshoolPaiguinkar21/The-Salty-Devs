@@ -3,7 +3,6 @@ import {body, validationResult} from "express-validator"
 import * as UserService from "./user.services.ts"
 import { HttpStatusCodes } from "@utils/httpStatusCodes.ts"
 
-
 export const signinUser = async (req: Request, res: Response) => {
     
     const errors = validationResult(req);
@@ -13,15 +12,32 @@ export const signinUser = async (req: Request, res: Response) => {
 
     try {
         const existingUser = await UserService.signinUser(req.body);
+        const token = existingUser.token;
+        res.cookie('jwt', token, {
+            httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+            secure: false,
+            sameSite: 'strict', // Protects against CSRF attacks
+            maxAge: 24 * 60 * 60 * 1000, // Cookie expires in 1 day
+        });
         return res.status(HttpStatusCodes.OK).json(existingUser);
     }
     catch(error: any){
-        if (error.message.includes("Invalid Credentials. Please try again")){
+        if (error.message.includes("Invalid Credentials. Please try again") || 
+            error.message.includes("User does not exist") || 
+            error.message.includes("Unauthorized: No token provided."))
+        {
             return res.status(HttpStatusCodes.UNAUTHORIZED).json({message: error.message});
         }
-        else if (error.message.includes("User does not exist")){
-            return res.status(HttpStatusCodes.NOT_FOUND).json({message: error.message});
-        }
+        return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
+    }
+}
+
+export const logoutUser = async (req: Request, res: Response) => {
+    try {
+        res.clearCookie('jwt')
+        res.status(HttpStatusCodes.OK).json({success: true, message:"User has been logged out successfully"})
+    }
+    catch (error: any){
         return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
     }
 }

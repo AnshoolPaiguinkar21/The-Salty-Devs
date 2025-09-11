@@ -33,7 +33,8 @@
       "@api/*": ["api/*"],
       "@routes/*": ["routes/*"],
       "@modules/*": ["modules/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@middlewares/*": ["middlewares/*"]
     }
   },
   "include": ["src"],

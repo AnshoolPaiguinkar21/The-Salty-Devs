@@ -3,6 +3,7 @@ import { AppError } from '@utils/appError.ts';
 import { HttpStatusCodes } from '@utils/httpStatusCodes.ts';
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
+import { Role } from "@prisma/client"
 
 export type User = {
   id: string;
@@ -10,6 +11,7 @@ export type User = {
   email: string;
   password: string;
   bio?: string | null;
+  role: Role;
 };
 
 export type UserResponse = {
@@ -22,6 +24,7 @@ export type UserResponse = {
 type JWTPayload = {
   id: string;
   email: string;
+  role: Role;
 }
 
 export const fetchUsers = async (): Promise<UserResponse[]> => {
@@ -31,6 +34,7 @@ export const fetchUsers = async (): Promise<UserResponse[]> => {
       name: true,
       email: true,
       bio: true,
+      role: true
     },
     orderBy: {
       id: 'asc',
@@ -45,7 +49,7 @@ export const fetchUser = async (id: string): Promise<UserResponse | null> => {
       id: true,
       name: true,
       email: true,
-      bio: true,
+      bio: true, role:true
     },
   });
 };
@@ -87,15 +91,16 @@ export const signinUser = async (user: User): Promise<{token: string, user: User
     throw new AppError('User does not exist', HttpStatusCodes.NOT_FOUND);
   }
 
-  const comparePassword = await bcrypt.compare(password, findUser.password);
+  const comparedPassword = await bcrypt.compare(password, findUser.password);
 
-  if (!comparePassword) {
+  if (!comparedPassword) {
     throw new AppError("Invalid Credentials. Please try again", HttpStatusCodes.UNAUTHORIZED);
   }
 
   const payload: JWTPayload= {
     id: findUser.id,
     email: findUser.email,
+    role: findUser.role
   }
 
   const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string)
@@ -106,11 +111,10 @@ export const signinUser = async (user: User): Promise<{token: string, user: User
     id: findUser.id,
     name: findUser.name,
     email: findUser.email,
-    bio: findUser.bio,
+    bio: findUser.bio
   }
-};
-  
-};
+} 
+}
 
 export const updateUser = async (
   id: string,
