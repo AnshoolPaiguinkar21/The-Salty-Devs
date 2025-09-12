@@ -16,6 +16,6 @@
     "concurrently": "^9.2.1"
   },
   "devDependencies": {
-    "npm-check-updates": "^18.1.0"
+    "npm-check-updates": "^18.1.1"
   }
 }
