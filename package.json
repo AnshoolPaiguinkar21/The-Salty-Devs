@@ -13,8 +13,7 @@
     "dev": "concurrently \"npm:dev:server\" \"npm:dev:client\""
   },
   "dependencies": {
-    "concurrently": "^9.2.1",
-    "lucide-react": "^0.543.0"
+    "concurrently": "^9.2.1"
   },
   "devDependencies": {
     "npm-check-updates": "^18.1.0"
