@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { Menu } from 'lucide-react';
 import {
@@ -24,7 +22,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import DarkModeToggle from './DarkModeToggle/page';
+import DarkModeToggle from '@/components/header/DarkModeToggle/page';
 
 interface MenuItem {
   title: string;
