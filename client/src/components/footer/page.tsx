@@ -18,7 +18,7 @@ const Footer = ({
     url: '/',
   },
   tagline = 'Sharing knowledge, one post at a time.',
-  copyright = '© 2024 The Salty Devs. All rights reserved.',
+  copyright = `© ${new Date().getFullYear()} The Salty Devs. All rights reserved.`,
 }: FooterProps) => {
   return (
     <section className="py-16">
