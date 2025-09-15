@@ -1,127 +1,41 @@
-import { Logo, LogoImage, LogoText } from '@/components/ui/logo';
-
-interface MenuItem {
-  title: string;
-  links: {
-    text: string;
-    url: string;
-  }[];
-}
+import React from 'react';
+import { Logo, LogoText } from '@/components/ui/logo';
 
 interface FooterProps {
   logo?: {
     url: string;
-    src: string;
     alt: string;
     title: string;
   };
   tagline?: string;
-  menuItems?: MenuItem[];
   copyright?: string;
-  bottomLinks?: {
-    text: string;
-    url: string;
-  }[];
 }
 
 const Footer = ({
   logo = {
-    src: 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/block-1.svg',
-    alt: 'blocks for shadcn/ui',
-    title: 'Shadcnblocks.com',
-    url: 'https://www.shadcnblocks.com',
+    alt: 'The Salty Devs',
+    title: 'The Salty Devs',
+    url: '/',
   },
-  tagline = 'Components made easy.',
-  menuItems = [
-    {
-      title: 'Product',
-      links: [
-        { text: 'Overview', url: '#' },
-        { text: 'Pricing', url: '#' },
-        { text: 'Marketplace', url: '#' },
-        { text: 'Features', url: '#' },
-        { text: 'Integrations', url: '#' },
-        { text: 'Pricing', url: '#' },
-      ],
-    },
-    {
-      title: 'Company',
-      links: [
-        { text: 'About', url: '#' },
-        { text: 'Team', url: '#' },
-        { text: 'Blog', url: '#' },
-        { text: 'Careers', url: '#' },
-        { text: 'Contact', url: '#' },
-        { text: 'Privacy', url: '#' },
-      ],
-    },
-    {
-      title: 'Resources',
-      links: [
-        { text: 'Help', url: '#' },
-        { text: 'Sales', url: '#' },
-        { text: 'Advertise', url: '#' },
-      ],
-    },
-    {
-      title: 'Social',
-      links: [
-        { text: 'Twitter', url: '#' },
-        { text: 'Instagram', url: '#' },
-        { text: 'LinkedIn', url: '#' },
-      ],
-    },
-  ],
-  copyright = '© 2024 Shadcnblocks.com. All rights reserved.',
-  bottomLinks = [
-    { text: 'Terms and Conditions', url: '#' },
-    { text: 'Privacy Policy', url: '#' },
-  ],
+  tagline = 'Sharing knowledge, one post at a time.',
+  copyright = '© 2024 The Salty Devs. All rights reserved.',
 }: FooterProps) => {
   return (
-    <section className="py-32">
-      <div className="container">
+    <section className="py-16">
+      <div className="container mx-auto">
         <footer>
-          <div className="grid grid-cols-2 gap-8 lg:grid-cols-6">
-            <div className="col-span-2 mb-8 lg:mb-0">
-              <div className="flex items-center gap-2 lg:justify-start">
-                <Logo url="https://shadcnblocks.com">
-                  <LogoImage
-                    src={logo.src}
-                    alt={logo.alt}
-                    title={logo.title}
-                    className="h-10"
-                  />
-                  <LogoText className="text-xl">{logo.title}</LogoText>
+          <div className="flex flex-col items-center text-center">
+            <div className="mb-6">
+              <div className="flex items-center justify-center gap-2">
+                <Logo url={logo.url}>
+                  <LogoText className="text-lg">{logo.title}</LogoText>
                 </Logo>
               </div>
-              <p className="mt-4 font-bold">{tagline}</p>
+              <p className="mt-2 text-muted-foreground">{tagline}</p>
             </div>
-            {menuItems.map((section, sectionIdx) => (
-              <div key={sectionIdx}>
-                <h3 className="mb-4 font-bold">{section.title}</h3>
-                <ul className="text-muted-foreground space-y-4">
-                  {section.links.map((link, linkIdx) => (
-                    <li
-                      key={linkIdx}
-                      className="hover:text-primary font-medium"
-                    >
-                      <a href={link.url}>{link.text}</a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-          <div className="text-muted-foreground mt-24 flex flex-col justify-between gap-4 border-t pt-8 text-sm font-medium md:flex-row md:items-center">
-            <p>{copyright}</p>
-            <ul className="flex gap-4">
-              {bottomLinks.map((link, linkIdx) => (
-                <li key={linkIdx} className="hover:text-primary underline">
-                  <a href={link.url}>{link.text}</a>
-                </li>
-              ))}
-            </ul>
+            <div className="border-t pt-6 w-full">
+              <p className="text-sm text-muted-foreground">{copyright}</p>
+            </div>
           </div>
         </footer>
       </div>
