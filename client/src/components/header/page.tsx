@@ -100,7 +100,7 @@ const Header = ({
 
         {/* Mobile Menu */}
         <div className="block lg:hidden">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mx-6">
             {/* Logo */}
             <a href={logo.url} className="flex items-center gap-2">
               <span className="text-lg font-semibold tracking-tighter">
@@ -138,6 +138,9 @@ const Header = ({
                     </Button>
                     <Button asChild>
                       <a href={auth.signup.url}>{auth.signup.title}</a>
+                    </Button>
+                    <Button asChild variant="outline">
+                      <DarkModeToggle />
                     </Button>
                   </div>
                 </div>
