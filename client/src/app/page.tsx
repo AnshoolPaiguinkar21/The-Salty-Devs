@@ -4,19 +4,19 @@ import PostCard from '@/components/postCard/page';
 const posts = [
   {
     id: '1',
-    title: 'Advanced TypeScript Tips',
-    excerpt: 'Master TypeScript with these advanced techniques.',
-    date: '2024-01-10',
-    slug: 'advanced-typescript-tips',
-    author: 'Jane Smith',
-  },
-  {
-    id: '2',
     title: 'Getting Started with React',
     excerpt: 'Learn the basics of React development.',
     date: '2024-01-15',
     slug: 'getting-started-with-react',
     author: 'John Doe',
+  },
+  {
+    id: '2',
+    title: 'Advanced TypeScript Tips',
+    excerpt: 'Master TypeScript with these advanced techniques.',
+    date: '2024-01-10',
+    slug: 'advanced-typescript-tips',
+    author: 'Jane Smith',
   },
 ];
 

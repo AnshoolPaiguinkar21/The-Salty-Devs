@@ -29,7 +29,7 @@ const PostCard = ({ post }: PostCardProps) => {
     viewCount = 0,
   } = post;
   return (
-    <Link href={`/posts/${slug}`}>
+    <Link href={`/articles/${slug}`}>
       <article className="group bg-card border border-border p-6 hover:gradient-border transition-all duration-300 h-full flex flex-col">
         <div className="space-y-4 flex-1">
           {/* Category and View Count */}
