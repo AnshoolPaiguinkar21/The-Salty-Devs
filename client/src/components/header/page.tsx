@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { Menu } from 'lucide-react';
 import {
@@ -24,7 +22,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import DarkModeToggle from './DarkModeToggle/page';
+import DarkModeToggle from '@/components/header/DarkModeToggle/page';
 
 interface MenuItem {
   title: string;
@@ -74,38 +72,42 @@ const Header = ({
       <div className="container mx-auto w-full">
         {/* Desktop Menu */}
         <nav className="hidden justify-between lg:flex w-full">
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-10">
             {/* Logo */}
             <a href={logo.url} className="flex items-center gap-2">
-              <span className="text-3xl font-bold tracking-tighter">
+              <span className="text-2xl font-bold tracking-tighter leading-none flex items-center">
                 {logo.title}
               </span>
             </a>
             <div className="flex items-center">
               <NavigationMenu>
-                <NavigationMenuList>
+                <NavigationMenuList className="items-center">
                   {menu.map((item) => renderMenuItem(item))}
                 </NavigationMenuList>
               </NavigationMenu>
             </div>
           </div>
-          <div className="flex gap-2">
-            <Button asChild variant="outline" size="sm">
-              <a href={auth.login.url}>{auth.login.title}</a>
-            </Button>
-            <Button asChild size="sm">
-              <a href={auth.signup.url}>{auth.signup.title}</a>
-            </Button>
-            <DarkModeToggle />
+          <div className="flex items-center gap-10">
+            <div>
+              <DarkModeToggle />
+            </div>
+            <div className="flex gap-2">
+              <Button asChild variant="outline" size="sm">
+                <a href={auth.login.url}>{auth.login.title}</a>
+              </Button>
+              <Button asChild size="sm">
+                <a href={auth.signup.url}>{auth.signup.title}</a>
+              </Button>
+            </div>
           </div>
         </nav>
 
         {/* Mobile Menu */}
         <div className="block lg:hidden">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mx-6">
             {/* Logo */}
             <a href={logo.url} className="flex items-center gap-2">
-              <span className="text-lg font-semibold tracking-tighter">
+              <span className="text-lg font-semibold tracking-tighter leading-none">
                 {logo.title}
               </span>
             </a>
@@ -172,7 +174,7 @@ const renderMenuItem = (item: MenuItem) => {
     <NavigationMenuItem key={item.title}>
       <NavigationMenuLink
         href={item.url}
-        className="bg-background hover:bg-muted hover:text-accent-foreground group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+        className="bg-background hover:bg-muted hover:text-accent-foreground group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-lg font-medium transition-colors"
       >
         {item.title}
       </NavigationMenuLink>

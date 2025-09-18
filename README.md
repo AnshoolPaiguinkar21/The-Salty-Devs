@@ -36,6 +36,27 @@ This project uses a modern, type-safe stack for both the client and the server.
 
 To get a local copy up and running, follow these simple steps.
 
+### **⚡ Quick Setup (TL;DR)**
+
+```bash
+# 1. Clone the project
+git clone https://github.com/your-username/the-salty-devs.git
+cd the-salty-devs
+
+# 2. Install all dependencies and set up the project
+npm run iall:safe
+
+# 3. Set up environment variables (see detailed instructions below)
+cd server && cp .env.example .env
+# Edit .env with your database URL, then run:
+npx prisma migrate dev && cd ..
+
+# 4. Start development servers
+npm run dev
+```
+
+That's it! Your app will be running on `http://localhost:3000` with the API on `http://localhost:3001`.
+
 ### Prerequisites
 
 - Node.js (v18 or later)
@@ -51,13 +72,7 @@ To get a local copy up and running, follow these simple steps.
     cd the-salty-devs
     ```
 
-2.  **Install root dependencies:**
-
-    ```sh
-    npm install
-    ```
-
-3.  **Install all project dependencies and generate Prisma client:**
+2.  **Install all dependencies and set up the project:**
 
     **🟢 Recommended (Safe Updates):**
 
@@ -81,14 +96,21 @@ To get a local copy up and running, follow these simple steps.
     npm run check:updates  # Check only - shows available updates without installing
     ```
 
-    These commands will:
+    **What `npm run iall` does:**
 
-    - Update packages to latest compatible versions
-    - Install server dependencies
-    - Install client dependencies
-    - Generate the Prisma client for database access
+    - Runs `npm-check-updates` (ncu) on all package.json files (root, server, and client directories)
+    - Installs dependencies for all three locations (root, server, client)
+    - Automatically runs `prisma generate` to create the database client
+    - Streamlines the entire setup process into a single command
 
-4.  **Set up environment variables:**
+    **Available Update Modes:**
+
+    - **`iall:patch`** - Only applies patch updates (bug fixes, most stable)
+    - **`iall:safe`** - Applies minor and patch updates (new features, backward compatible)
+    - **`iall`** - Applies all updates including major versions (may introduce breaking changes)
+    - **`check:updates`** - Shows available updates without installing them
+
+3.  **Set up environment variables:**
     - Navigate to the server directory and create a `.env` file:
       ```sh
       cd server
@@ -109,10 +131,18 @@ From the **root directory**, run:
 npm run dev
 ```
 
-This will start both the client and server concurrently:
+**What `npm run dev` does:**
 
-- **Next.js client**: `http://localhost:3000`
-- **Express.js server**: `http://localhost:3001`
+- Uses `concurrently` to run both client and server simultaneously
+- Starts the Next.js frontend development server on `http://localhost:3000`
+- Starts the Express.js backend API server on `http://localhost:3001`
+- Provides live reload for both frontend and backend during development
+- Displays output from both servers in a single terminal with color-coded logs
+
+**Individual Development Servers:**
+
+- `npm run dev:client` - Start only the Next.js frontend
+- `npm run dev:server` - Start only the Express.js backend
 
 ---
 
@@ -280,18 +310,18 @@ Category {
 
 ## 🚀 Development Scripts
 
-| Script           | Command                  | Description                                      |
-| ---------------- | ------------------------ | ------------------------------------------------ |
-| **Development**  | `npm run dev`            | Start both client and server in development mode |
-|                  | `npm run dev:client`     | Start only the Next.js client                    |
-|                  | `npm run dev:server`     | Start only the Express server                    |
-| **Installation** | `npm run check:updates`  | Check for available package updates              |
-|                  | `npm run iall:patch`     | Install patch updates only (safest)              |
-|                  | `npm run iall:safe`      | Install minor + patch updates (recommended)      |
-|                  | `npm run iall`           | Install all updates including major (risky)      |
-| **Database**     | `npx prisma migrate dev` | Run database migrations                          |
-|                  | `npx prisma studio`      | Open Prisma Studio (database GUI)                |
-|                  | `npx prisma generate`    | Generate Prisma client                           |
+| Script          | Command                  | Description                                                                                   |
+| --------------- | ------------------------ | --------------------------------------------------------------------------------------------- |
+| **Setup**       | `npm run iall`           | Complete project setup - updates all packages, installs dependencies, generates Prisma client |
+|                 | `npm run iall:safe`      | Safe setup - minor + patch updates only (recommended)                                         |
+|                 | `npm run iall:patch`     | Safest setup - patch updates only (bug fixes)                                                 |
+|                 | `npm run check:updates`  | Check for available package updates without installing                                        |
+| **Development** | `npm run dev`            | Start both client and server concurrently                                                     |
+|                 | `npm run dev:client`     | Start only the Next.js client                                                                 |
+|                 | `npm run dev:server`     | Start only the Express server                                                                 |
+| **Database**    | `npx prisma migrate dev` | Run database migrations (from server directory)                                               |
+|                 | `npx prisma studio`      | Open Prisma Studio database GUI (from server directory)                                       |
+|                 | `npx prisma generate`    | Generate Prisma client (automatically run by iall commands)                                   |
 
 ---
 
@@ -308,12 +338,13 @@ Category {
 
 1. **Clone the repository**
 2. **Create a feature branch**: `git checkout -b feature/your-feature-name`
-3. **Install dependencies**: `npm run iall:safe`
-4. **Start development**: `npm run dev`
-5. **Make your changes**
-6. **Test thoroughly**
-7. **Commit and push**
-8. **Create a Pull Request**
+3. **Set up the project**: `npm run iall:safe`
+4. **Configure environment**: Set up your `.env` file in the server directory
+5. **Start development**: `npm run dev`
+6. **Make your changes**
+7. **Test thoroughly**
+8. **Commit and push**
+9. **Create a Pull Request**
 
 ### **Code Standards**
 

@@ -34,21 +34,41 @@ server/src/
 
 ## 🛠️ Development
 
+### **Quick Start (Recommended)**
+
 **From the root directory**, run:
 
 ```bash
-npm run dev:server
-# or from this directory:
+# Set up the entire project (installs all dependencies, generates Prisma client)
+npm run iall:safe
+
+# Start both backend and frontend
 npm run dev
 ```
 
-The API will be available at [http://localhost:3001](http://localhost:3001)
+The backend API will be available at [http://localhost:3001](http://localhost:3001)
+The frontend will be available at [http://localhost:3000](http://localhost:3000)
+
+### **Backend Only Development**
+
+If you only want to work on the backend:
+
+```bash
+# From the root directory
+npm run dev:server
+
+# Or from the server directory
+npm run dev
+```
+
+**Note:** Make sure you have set up your `.env` file and run database migrations before starting the server.
 
 ## 🔌 API Endpoints
 
 ### **Base URL:** `http://localhost:3001/api`
 
 #### **👤 Users** (`/api/user`)
+
 - `GET /api/user` - Get all users
 - `GET /api/user/:id` - Get user by ID
 - `POST /api/user` - Create new user
@@ -57,6 +77,7 @@ The API will be available at [http://localhost:3001](http://localhost:3001)
 - `POST /api/user/signin` - User authentication
 
 #### **📝 Posts** (`/api/posts`)
+
 - `GET /api/posts` - Get all published posts
 - `GET /api/posts/:id` - Get post by ID
 - `POST /api/posts` - Create new post
@@ -64,6 +85,7 @@ The API will be available at [http://localhost:3001](http://localhost:3001)
 - `DELETE /api/posts/:id` - Delete post
 
 #### **💬 Comments** (`/api/comments`)
+
 - `GET /api/comments` - Get all comments
 - `GET /api/comments/:id` - Get comment by ID
 - `POST /api/comments` - Create new comment
@@ -71,6 +93,7 @@ The API will be available at [http://localhost:3001](http://localhost:3001)
 - `DELETE /api/comments/:id` - Delete comment
 
 #### **🏷️ Categories** (`/api/categories`)
+
 - `GET /api/categories` - Get all categories with posts
 - `GET /api/categories/:id` - Get category by ID
 - `POST /api/categories` - Create new category
@@ -80,18 +103,19 @@ The API will be available at [http://localhost:3001](http://localhost:3001)
 ## 🗄️ Database
 
 ### **Setup**
+
 1. **Create PostgreSQL database**
-2. **Set DATABASE_URL in .env file**
+2. **Set DATABASE_URL in .env file** (copy from .env.example)
 3. **Run migrations:**
    ```bash
+   cd server
    npx prisma migrate dev
    ```
-4. **Generate Prisma client:**
-   ```bash
-   npx prisma generate
-   ```
+
+**Note:** The Prisma client is automatically generated when you run `npm run iall` commands from the root directory, so you don't need to run `npx prisma generate` manually during initial setup.
 
 ### **Useful Commands**
+
 ```bash
 npx prisma studio          # Open database GUI
 npx prisma migrate reset    # Reset database
@@ -110,10 +134,12 @@ The API uses **JWT (JSON Web Tokens)** for authentication:
 ## 📚 Learn More
 
 ### **Project Resources:**
+
 - [Main README](../README.md) - Full project documentation
 - [Frontend](../client/README.md) - Next.js frontend
 
 ### **Technology Resources:**
+
 - [Express.js Documentation](https://expressjs.com/) - Web framework
 - [Prisma Documentation](https://www.prisma.io/docs) - Database toolkit
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/) - Database
