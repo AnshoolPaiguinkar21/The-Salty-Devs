@@ -33,15 +33,34 @@ client/src/
 
 ## 🛠️ Development
 
+### **Quick Start (Recommended)**
+
 **From the root directory**, run:
 
 ```bash
-npm run dev:client
-# or from this directory:
+# Set up the entire project (installs all dependencies, generates Prisma client)
+npm run iall:safe
+
+# Start both frontend and backend
 npm run dev
 ```
 
-The app will be available at [http://localhost:3000](http://localhost:3000)
+The frontend will be available at [http://localhost:3000](http://localhost:3000)
+The backend API will be available at [http://localhost:3001](http://localhost:3001)
+
+### **Frontend Only Development**
+
+If you only want to work on the frontend:
+
+```bash
+# From the root directory
+npm run dev:client
+
+# Or from the client directory
+npm run dev
+```
+
+**Note:** The frontend requires the backend API to be running for full functionality. Use the complete setup above for the best development experience.
 
 ## 🎨 UI Components
 
