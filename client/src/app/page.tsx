@@ -9,6 +9,7 @@ const posts = [
     date: '2024-01-15',
     slug: 'getting-started-with-react',
     author: 'John Doe',
+    tags: ['react', 'javascript'],
   },
   {
     id: '2',
@@ -17,6 +18,7 @@ const posts = [
     date: '2024-01-10',
     slug: 'advanced-typescript-tips',
     author: 'Jane Smith',
+    tags: ['typescript', 'advanced'],
   },
 ];
 
