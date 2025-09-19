@@ -3,6 +3,7 @@ import {body, validationResult} from "express-validator"
 import * as UserService from "./user.services.ts"
 import { HttpStatusCodes } from "@utils/httpStatusCodes.ts"
 
+// Login 
 export const signinUser = async (req: Request, res: Response) => {
     
     const errors = validationResult(req);
@@ -32,6 +33,7 @@ export const signinUser = async (req: Request, res: Response) => {
     }
 }
 
+// Logout
 export const logoutUser = async (req: Request, res: Response) => {
     try {
         res.clearCookie('jwt')
@@ -42,6 +44,7 @@ export const logoutUser = async (req: Request, res: Response) => {
     }
 }
 
+// Get existing users
 export const fetchUsers = async (req: Request, res: Response) => {
     try {
         const users = await UserService.fetchUsers();
@@ -52,6 +55,7 @@ export const fetchUsers = async (req: Request, res: Response) => {
     }
 }
 
+// Get a single user by unique ID
 export const fetchUser = async (req: Request, res: Response) => {
 
     const id: string = req.params.id;
@@ -64,7 +68,8 @@ export const fetchUser = async (req: Request, res: Response) => {
         return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
     }
 }
- 
+
+// Register a new user
 export const createUser = async (req: Request, res: Response) => {
     
     const errors = validationResult(req);
@@ -84,6 +89,7 @@ export const createUser = async (req: Request, res: Response) => {
     }
 }
 
+// Update existing user data
 export const updateUser = async (req: Request, res: Response) => {
 
                 const errors = validationResult(req);
@@ -102,11 +108,12 @@ export const updateUser = async (req: Request, res: Response) => {
                 }
             }
 
+// Delete an existing user
 export const deleteUser = async (req: Request, res: Response) => {
     const id: string = req.params.id;
     try {
         await UserService.deleteUser(id);
-        return res.status(HttpStatusCodes.NO_CONTENT).send("User Deleted")
+        return res.status(HttpStatusCodes.OK).send("User Deleted")
     }
     catch(error: any) {
         return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json(error.message)

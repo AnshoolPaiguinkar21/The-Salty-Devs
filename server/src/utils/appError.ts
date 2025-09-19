@@ -5,6 +5,8 @@ export class AppError extends Error {
   constructor(message: string, statusCode: HttpStatusCodes) {
     super(message);
     this.statusCode = statusCode;
+    this.message = message;
+    this.name = "Anshool";
     Object.setPrototypeOf(this, AppError.prototype);
   }
 }
