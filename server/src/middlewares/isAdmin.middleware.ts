@@ -1,8 +1,8 @@
-import { AppError } from "../utils/appError.ts";
-import { HttpStatusCodes } from "../utils/httpStatusCodes.ts";
-import type { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { Role } from "@prisma/client";
+import { AppError } from '../utils/appError.ts';
+import { HttpStatusCodes } from '../utils/httpStatusCodes.ts';
+import type { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import { Role } from '@prisma/client';
 
 // Extending the Request type to include a user property for middleware to use
 // declare module "express-serve-static-core" {
@@ -17,16 +17,32 @@ type JWTPayload = {
   role: Role;
 };
 
-export const isAdmin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
+export const isAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
     const token = req.cookies.jwt;
     if (!token) {
-      throw new AppError("Unauthorized: No token provided.", HttpStatusCodes.UNAUTHORIZED);
+      throw new AppError(
+        'Unauthorized: No token provided.',
+        HttpStatusCodes.UNAUTHORIZED
+      );
     }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY as string) as JWTPayload;
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET_KEY as string
+    ) as JWTPayload;
+
+    console.log("User role:", decoded.role);
+
 
     if (decoded.role !== 'ADMIN') {
-      throw new AppError("Forbidden: You do not have administrator privileges.", HttpStatusCodes.FORBIDDEN);
+      throw new AppError(
+        'Forbidden: You do not have administrator privileges.',
+        HttpStatusCodes.FORBIDDEN
+      );
     }
 
     // If the user is an admin, proceed to the next middleware or route handler.
@@ -35,4 +51,4 @@ export const isAdmin = async (req: Request, res: Response, next: NextFunction): 
     // Pass any errors to the global error handler.
     next(error);
   }
-}
+};

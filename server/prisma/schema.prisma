@@ -31,29 +31,34 @@ model User {
   bio       String?
   posts     Post[]
   comments  Comment[]
+
+  views PostViews[]
 }
 
 model Post {
   //id        Int       @id @default(autoincrement())
-  id          String     @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
   content     String?
-  published   Boolean    @default(false)
-  author      User       @relation(fields: [authorId], references: [id])
+  published   Boolean   @default(false)
+  author      User      @relation(fields: [authorId], references: [id])
   authorId    String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   publishedAt DateTime?
   imageURL    String?
-  views       Int        @default(0)
+  views       Int       @default(0)
   comments    Comment[]
 
+  // Post visitors
+  viewedBy PostViews[]
+
   // CORRECTED: A post has ONE category
-  category    Category? @relation(fields: [categoryId], references: [id])
-  categoryId  String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId String?
 
   // NEW: A post can have MANY tags
-  tags        Tag[]
+  tags Tag[]
 }
 
 model Comment {
@@ -82,4 +87,15 @@ model Tag {
   name  String @unique
   slug  String @unique
   posts Post[]
+}
+
+model PostViews {
+  id        String   @id @default(uuid())
+  viewedAt  DateTime @default(now())
+  visitor   User     @relation(fields: [visitorId], references: [id])
+  visitorId String
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String
+
+  @@unique([visitorId, postId]) // each user(visitor) can have one view per post(article)
 }
