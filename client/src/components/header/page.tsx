@@ -92,10 +92,10 @@ const Header = ({
               <DarkModeToggle />
             </div>
             <div className="flex gap-2">
-              <Button asChild variant="outline" size="sm">
+              <Button asChild variant="outline">
                 <a href={auth.login.url}>{auth.login.title}</a>
               </Button>
-              <Button asChild size="sm">
+              <Button asChild>
                 <a href={auth.signup.url}>{auth.signup.title}</a>
               </Button>
             </div>

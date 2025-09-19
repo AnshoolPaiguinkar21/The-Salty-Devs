@@ -25,13 +25,13 @@ const DarkModeToggle = () => {
   return (
     <button
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className="w-9 h-9 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center justify-center"
+      className="w-9 h-9 rounded-md border-gray-300 transition-colors flex items-center justify-center border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50"
       aria-label="Toggle theme"
     >
       {theme === 'dark' ? (
-        <Sun className="h-4 w-4 text-yellow-500" />
+        <Sun className="h-4 w-4 text-gray-300" />
       ) : (
-        <Moon className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+        <Moon className="h-4 w-4 text-gray-700" />
       )}
     </button>
   );
