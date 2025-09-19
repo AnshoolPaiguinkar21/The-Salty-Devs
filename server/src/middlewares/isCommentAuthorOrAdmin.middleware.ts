@@ -3,24 +3,24 @@ import { HttpStatusCodes } from '@utils/httpStatusCodes.ts';
 import type { Request, Response, NextFunction } from 'express';
 import { db } from '@utils/db.config.ts';
 
-// Checks if the author is authenticated user or admin
-export const isCommentAuthor = async (
+// Checks if the user is the comment author or an admin (for editing/deleting comments)
+export const isCommentAuthorOrAdmin = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    // If the user is an admin, they are authorized to proceed
-    if (req.user?.role === 'ADMIN') {
-      return next();
-    }
-
-    // If not an admin, check if the user is authenticated
+    // Check if user is authenticated (should be handled by isAuthUser middleware before this)
     if (!req.user) {
       throw new AppError(
         'Unauthorized: You must be logged in to modify this comment',
         HttpStatusCodes.UNAUTHORIZED
       );
+    }
+
+    // If the user is an admin, they are authorized to proceed
+    if (req.user.role === 'ADMIN') {
+      return next();
     }
 
     const commentId = req.params.id;
@@ -35,6 +35,7 @@ export const isCommentAuthor = async (
     const comment = await db.comment.findUnique({
       where: { id: commentId },
     });
+
     if (!comment) {
       throw new AppError(
         'Not Found: Comment not found',
@@ -42,6 +43,7 @@ export const isCommentAuthor = async (
       );
     }
 
+    // Check if the user is the author of the comment
     if (comment.authorId !== req.user.id) {
       throw new AppError(
         'Forbidden: You do not have permission to modify this comment',
