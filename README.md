@@ -55,7 +55,7 @@ npx prisma migrate dev && cd ..
 npm run dev
 ```
 
-That's it! Your app will be running on `http://localhost:3000` with the API on `http://localhost:3001`.
+That's it! Your app will be running on `http://localhost:3000` with the API on `http://localhost:4000`.
 
 ### Prerequisites
 
@@ -135,7 +135,7 @@ npm run dev
 
 - Uses `concurrently` to run both client and server simultaneously
 - Starts the Next.js frontend development server on `http://localhost:3000`
-- Starts the Express.js backend API server on `http://localhost:3001`
+- Starts the Express.js backend API server on `http://localhost:4000`
 - Provides live reload for both frontend and backend during development
 - Displays output from both servers in a single terminal with color-coded logs
 
@@ -204,7 +204,7 @@ The backend provides a comprehensive REST API for managing blog content. All end
 ### **Base URL**
 
 ```
-http://localhost:3001/api
+http://localhost:4000/api
 ```
 
 ### **Available Endpoints**

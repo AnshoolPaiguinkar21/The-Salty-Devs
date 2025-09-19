@@ -46,7 +46,7 @@ npm run dev
 ```
 
 The frontend will be available at [http://localhost:3000](http://localhost:3000)
-The backend API will be available at [http://localhost:3001](http://localhost:3001)
+The backend API will be available at [http://localhost:4000](http://localhost:4000)
 
 ### **Frontend Only Development**
 
@@ -100,7 +100,7 @@ The frontend consumes the Express.js backend API:
 
 ```typescript
 // Example API calls (to be implemented)
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = 'http://localhost:4000/api';
 
 // Fetch posts
 const posts = await fetch(`${API_BASE}/posts`);

@@ -1,4 +1,4 @@
-import app from './app.ts'
+import app from './app.ts';
 
 //import express from 'express'
 
@@ -7,14 +7,13 @@ import app from './app.ts'
 // app.use(express.json())
 // app.use(express.urlencoded({extended: false}))
 
-
-const PORT = 3001;
-
 // import routes from "./routes/index.ts"
 // app.use(routes)
 
-app.listen(PORT, () => console.log(`Server is running on PORT: ${PORT}`))
-
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
 
 // app.get("/", (req, res) => {
 //     res.send(JSON.stringify('API is working'))

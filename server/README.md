@@ -46,7 +46,7 @@ npm run iall:safe
 npm run dev
 ```
 
-The backend API will be available at [http://localhost:3001](http://localhost:3001)
+The backend API will be available at [http://localhost:4000](http://localhost:4000)
 The frontend will be available at [http://localhost:3000](http://localhost:3000)
 
 ### **Backend Only Development**
@@ -65,7 +65,7 @@ npm run dev
 
 ## 🔌 API Endpoints
 
-### **Base URL:** `http://localhost:3001/api`
+### **Base URL:** `http://localhost:4000/api`
 
 #### **👤 Users** (`/api/user`)
 
