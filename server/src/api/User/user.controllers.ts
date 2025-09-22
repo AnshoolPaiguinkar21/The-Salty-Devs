@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import {body, validationResult} from "express-validator"
 import * as UserService from "./user.services.ts"
 import { HttpStatusCodes } from "@utils/httpStatusCodes.ts"
+import jwt from "jsonwebtoken"
 
 // Login 
 export const signinUser = async (req: Request, res: Response) => {
@@ -14,11 +15,18 @@ export const signinUser = async (req: Request, res: Response) => {
     try {
         const existingUser = await UserService.signinUser(req.body);
         const token = existingUser.token;
+        const refreshToken = existingUser.refreshToken;
         res.cookie('jwt', token, {
             httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
             secure: false,
             sameSite: 'strict', // Protects against CSRF attacks
-            maxAge: 24 * 60 * 60 * 1000, // Cookie expires in 1 day
+            maxAge:  60 * 60 * 1000, // Cookie expires in 1 hr
+        });
+         res.cookie("refreshJwt", refreshToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "strict",
+            maxAge: 24 * 60 * 60 * 1000, // 1 day
         });
         return res.status(HttpStatusCodes.OK).json(existingUser);
     }
@@ -36,7 +44,8 @@ export const signinUser = async (req: Request, res: Response) => {
 // Logout
 export const logoutUser = async (req: Request, res: Response) => {
     try {
-        res.clearCookie('jwt')
+        res.clearCookie('jwt');
+        res.clearCookie('refreshJwt');
         res.status(HttpStatusCodes.OK).json({success: true, message:"User has been logged out successfully"})
     }
     catch (error: any){
@@ -116,6 +125,70 @@ export const deleteUser = async (req: Request, res: Response) => {
         return res.status(HttpStatusCodes.OK).send("User Deleted")
     }
     catch(error: any) {
+        return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
+    }
+}
+
+export const refreshToken = async (req: Request, res: Response) => {
+    try{
+        const refreshToken = req.cookies.refreshJwt;
+        if (!refreshToken) {
+            return res.status(HttpStatusCodes.UNAUTHORIZED).json({ message: "No token provided." });
+        } 
+         // Verify refresh token
+        jwt.verify(
+        refreshToken,
+        process.env.JWT_SECRET_KEY as string,
+        (err: any, decoded: any) => {
+            if (err) {
+            return res
+                .status(HttpStatusCodes.FORBIDDEN)
+                .json({ message: "Invalid or expired refresh token" });
+            }
+
+            const payload = {
+            id: (decoded as any).id,
+            email: (decoded as any).email,
+            role: (decoded as any).role,
+            };
+
+            // Generate new access token
+            const newAccessToken = jwt.sign(
+            payload,
+            process.env.JWT_SECRET_KEY as string,
+            { expiresIn: "1h" }
+            );
+
+            // (Optional) Generate a new refresh token too
+            const newRefreshToken = jwt.sign(
+            payload,
+            process.env.JWT_SECRET_KEY as string,
+            { expiresIn: "1d" }
+            );
+
+            // Reset cookies
+            res.cookie("jwt", newAccessToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "strict",
+            maxAge: 60 * 60 * 1000, // 1h
+            });
+
+            res.cookie("refreshJwt", newRefreshToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "strict",
+            maxAge:  24 * 60 * 60 * 1000, // 1 day
+            });
+
+            return res.status(HttpStatusCodes.OK).json({
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken,
+            });
+        }
+        );
+    }
+    catch(error: any){
         return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
     }
 }

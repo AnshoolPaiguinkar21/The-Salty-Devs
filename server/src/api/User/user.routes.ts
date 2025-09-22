@@ -12,6 +12,8 @@ router.post("/login", UserControllers.signinUser)
 router.post("/logout", UserControllers.logoutUser)
 router.post("/register", UserControllers.createUser)
 router.put("/:id", isAuthUser, UserControllers.updateUser)
+router.post("/refresh", UserControllers.refreshToken);
+
 
 
 export default router;

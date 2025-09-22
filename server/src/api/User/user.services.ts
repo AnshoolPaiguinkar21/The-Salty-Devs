@@ -3,7 +3,7 @@ import { AppError } from '@utils/appError.ts';
 import { HttpStatusCodes } from '@utils/httpStatusCodes.ts';
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
-import { Role } from "@prisma/client"
+import { Role } from '@prisma/client';
 
 export type User = {
   id: string;
@@ -34,7 +34,7 @@ export const fetchUsers = async (): Promise<UserResponse[]> => {
       name: true,
       email: true,
       bio: true,
-      role: true
+      // role: true
     },
     orderBy: {
       id: 'asc',
@@ -79,7 +79,7 @@ export const createUser = async (user: Omit<User, 'id'>): Promise<User> => {
   });
 };
 
-export const signinUser = async (user: User): Promise<{token: string, user: UserResponse}> => {
+export const signinUser = async (user: User): Promise<{token: string, refreshToken: string, user: UserResponse}> => {
   const { email, password } = user;
   const findUser = await db.user.findUnique({
     where: {
@@ -103,10 +103,12 @@ export const signinUser = async (user: User): Promise<{token: string, user: User
     role: findUser.role
   }
 
-  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string)
+  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string,{expiresIn: '1h'});
+
+  const refreshToken = jwt.sign(payload,process.env.JWT_SECRET_KEY as string, { expiresIn: '1D'}); 
 
   return {
-  token,
+  token,refreshToken,
   user: {
     id: findUser.id,
     name: findUser.name,
