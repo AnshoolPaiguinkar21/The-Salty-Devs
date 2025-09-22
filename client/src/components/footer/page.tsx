@@ -17,7 +17,7 @@ const Footer = ({
     title: 'The Salty Devs',
     url: '/',
   },
-  tagline = 'Sharing knowledge, one post at a time.',
+  tagline = 'Sharing knowledge, one article at a time.',
   copyright = `© ${new Date().getFullYear()} The Salty Devs. All rights reserved.`,
 }: FooterProps) => {
   return (
