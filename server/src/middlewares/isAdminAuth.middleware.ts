@@ -39,4 +39,3 @@ export const isAdminAuth = (req: Request, res: Response, next: NextFunction): vo
     next(error);
   }
 };
-//hi
