@@ -4,6 +4,11 @@ import { HttpStatusCodes } from '@utils/httpStatusCodes.ts';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Role } from '@prisma/client';
+import {
+  LoginUserInput,
+  RegisterUserInput,
+  UpdateUserInput,
+} from '../../validation/user.validation.ts';
 
 export type User = {
   id: string;
@@ -54,7 +59,7 @@ export const fetchUser = async (id: string): Promise<UserResponse | null> => {
   });
 };
 
-export const createUser = async (user: Omit<User, 'id'>): Promise<User> => {
+export const createUser = async (user: RegisterUserInput): Promise<User> => {
   const { name, email, password, bio } = user;
   const findUser = await db.user.findUnique({
     where: {
@@ -80,7 +85,7 @@ export const createUser = async (user: Omit<User, 'id'>): Promise<User> => {
 };
 
 export const signinUser = async (
-  user: User
+  user: LoginUserInput
 ): Promise<{ token: string; refreshToken: string; user: UserResponse }> => {
   const { email, password } = user;
   const findUser = await db.user.findUnique({
@@ -129,14 +134,10 @@ export const signinUser = async (
 
 export const updateUser = async (
   id: string,
-  user: Omit<User, 'id'>
+  user: UpdateUserInput
 ): Promise<User> => {
-  const { name, email, password, bio } = user;
+  const { name, email, bio } = user;
 
-  let hashedPassword = password;
-  if (password) {
-    hashedPassword = await bcrypt.hash(password, 10);
-  }
   return db.user.update({
     where: {
       id: id,
@@ -144,9 +145,39 @@ export const updateUser = async (
     data: {
       name,
       email,
-      password: hashedPassword,
       bio,
     },
+  });
+};
+
+export const updateUserPassword = async (
+  id: string,
+  currentPassword: string,
+  newPassword: string
+): Promise<void> => {
+  const user = await db.user.findUnique({
+    where: { id },
+  });
+
+  if (!user) {
+    throw new AppError('User not found', HttpStatusCodes.NOT_FOUND);
+  }
+
+  const isCurrentPasswordValid = await bcrypt.compare(
+    currentPassword,
+    user.password
+  );
+  if (!isCurrentPasswordValid) {
+    throw new AppError(
+      'Current password is incorrect',
+      HttpStatusCodes.UNAUTHORIZED
+    );
+  }
+
+  const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+  await db.user.update({
+    where: { id },
+    data: { password: hashedNewPassword },
   });
 };
 
