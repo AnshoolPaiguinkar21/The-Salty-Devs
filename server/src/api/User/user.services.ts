@@ -140,7 +140,7 @@ export const updateUser = async (
   const { name, email, password, bio } = user;
 
   let hashedPassword = password;
-  if (password){
+  if (password) {
     hashedPassword = await bcrypt.hash(password, 10);
   }
   return db.user.update({
