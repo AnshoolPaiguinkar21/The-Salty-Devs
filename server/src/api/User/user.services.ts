@@ -49,7 +49,8 @@ export const fetchUser = async (id: string): Promise<UserResponse | null> => {
       id: true,
       name: true,
       email: true,
-      bio: true, role:true
+      bio: true,
+      role: true,
     },
   });
 };
