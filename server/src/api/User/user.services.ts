@@ -97,41 +97,36 @@ export const signinUser = async (
   const comparedPassword = await bcrypt.compare(password, findUser.password);
 
   if (!comparedPassword) {
-    throw new AppError("Invalid Credentials. Please try again", HttpStatusCodes.UNAUTHORIZED);
+    throw new AppError(
+      'Invalid Credentials. Please try again',
+      HttpStatusCodes.UNAUTHORIZED
+    );
   }
 
-  const payload: JWTPayload= {
+  const payload: JWTPayload = {
     id: findUser.id,
     email: findUser.email,
-    role: findUser.role
-  }
+    role: findUser.role,
+  };
 
-<<<<<<< Updated upstream
-  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string,{expiresIn: '1h'});
-
-  const refreshToken = jwt.sign(payload,process.env.JWT_SECRET_KEY as string, { expiresIn: '1D'}); 
-
-  return {
-  token,refreshToken,
-=======
-  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string,{
-    expiresIn :'15m'
-  })
-  const refreshtToken = jwt.sign(payload, process.env.JWT_SECRET_KEY as string,{
-    expiresIn :'7d'
-  })
+  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string, {
+    expiresIn: '15m',
+  });
+  const refreshToken = jwt.sign(payload, process.env.JWT_SECRET_KEY as string, {
+    expiresIn: '7d',
+  });
 
   return {
-  token,refreshtToken,
->>>>>>> Stashed changes
-  user: {
-    id: findUser.id,
-    name: findUser.name,
-    email: findUser.email,
-    bio: findUser.bio
-  }
-} 
-}
+    token,
+    refreshToken,
+    user: {
+      id: findUser.id,
+      name: findUser.name,
+      email: findUser.email,
+      bio: findUser.bio,
+    },
+  };
+};
 
 export const updateUser = async (
   id: string,
