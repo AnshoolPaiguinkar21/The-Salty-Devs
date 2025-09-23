@@ -1,8 +1,8 @@
 import { db } from '@utils/db.config.ts';
 import { AppError } from '@utils/appError.ts';
 import { HttpStatusCodes } from '@utils/httpStatusCodes.ts';
-import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { Role } from '@prisma/client';
 
 export type User = {
@@ -25,7 +25,7 @@ type JWTPayload = {
   id: string;
   email: string;
   role: Role;
-}
+};
 
 export const fetchUsers = async (): Promise<UserResponse[]> => {
   return db.user.findMany({
@@ -77,12 +77,14 @@ export const createUser = async (user: Omit<User, 'id'>): Promise<User> => {
       name,
       email,
       password: hashedPassword,
-      bio
+      bio,
     },
   });
 };
 
-export const signinUser = async (user: User): Promise<{token: string, refreshToken: string, user: UserResponse}> => {
+export const signinUser = async (
+  user: User
+): Promise<{ token: string; refreshToken: string; user: UserResponse }> => {
   const { email, password } = user;
   const findUser = await db.user.findUnique({
     where: {
@@ -151,7 +153,7 @@ export const updateUser = async (
       name,
       email,
       password: hashedPassword,
-      bio
+      bio,
     },
   });
 };
@@ -161,4 +163,3 @@ export const deleteUser = async (id: string): Promise<void> => {
     where: { id: id },
   });
 };
-
