@@ -34,10 +34,7 @@ export const fetchUsers = async (): Promise<UserResponse[]> => {
       name: true,
       email: true,
       bio: true,
-<<<<<<< Updated upstream
       // role: true
-=======
->>>>>>> Stashed changes
     },
     orderBy: {
       id: 'asc',
