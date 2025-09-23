@@ -1,8 +1,8 @@
 import { db } from '@utils/db.config.ts';
 import { AppError } from '@utils/appError.ts';
 import { HttpStatusCodes } from '@utils/httpStatusCodes.ts';
-import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { Role } from '@prisma/client';
 
 export type User = {
