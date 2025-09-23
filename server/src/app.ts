@@ -1,17 +1,14 @@
-import express from "express"
-import routes from "@routes/index.ts"
-import cookieParser from "cookie-parser"
-import { errorHandler } from "@utils/error-handler.ts"
-//import { errorHandler } from "@middlewares/errHandler.middleware.ts"
+import express from 'express';
+import routes from '@routes/index.ts';
+import cookieParser from 'cookie-parser';
+import { errorHandler } from '@middlewares/errHandler.middleware.ts';
 
-const app = express()
+const app = express();
 
-app.use(cookieParser())
-app.use(express.json())
-app.use(express.urlencoded({extended: false}))
-app.use(routes)
-app.use(errorHandler)
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(routes);
+app.use(errorHandler);
 
 export default app;
-
-//hi
