@@ -31,7 +31,9 @@
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
-    "the-salty-devs": "file:.."
+    "the-salty-devs": "file:..",
+    "zod": "^4.1.11",
+    "zod-validation-error": "^4.0.2"
   },
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",

@@ -1,8 +1,11 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import {body, validationResult} from "express-validator"
 import * as UserService from "./user.services.ts"
 import { HttpStatusCodes } from "@utils/httpStatusCodes.ts"
 import jwt from "jsonwebtoken"
+import { registerUserSchema } from "validation/user.validation.ts";
+import { fromZodError } from "zod-validation-error";
+import {z} from 'zod'
 
 // Login 
 export const signinUser = async (req: Request, res: Response) => {
@@ -79,23 +82,40 @@ export const fetchUser = async (req: Request, res: Response) => {
 }
 
 // Register a new user
-export const createUser = async (req: Request, res: Response) => {
-    
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(HttpStatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+export const createUser = async (req: Request, res: Response, next: NextFunction) => {
+    const result = registerUserSchema.safeParse(req.body)
+    if(!result.success){
+        const valError = z.treeifyError(result.error)
+        return res.status(HttpStatusCodes.BAD_REQUEST).json({
+            status: "error",
+            message: "Validation failed",
+            errors: valError, // Zod's error format
+        });
     }
+    const newUser = await UserService.createUser(req.body);
+    return res.status(HttpStatusCodes.CREATED).json(newUser);
+    // const errors = validationResult(req);
+    // if (!errors.isEmpty()) {
+    //   return res.status(HttpStatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+    // }
 
-    try {
-        const newUser = await UserService.createUser(req.body);
-        return res.status(HttpStatusCodes.CREATED).json(newUser);
-    }
-    catch(error: any){
-        if (error.message.includes("User already exists")){
-            return res.status(HttpStatusCodes.CONFLICT).json({status: 409, message: error.message});
-        }
-        return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
-    }
+    // try {
+    //     registerUserSchema.parse(req.body)
+    //     const newUser = await UserService.createUser(req.body);
+    //     return res.status(HttpStatusCodes.CREATED).json(newUser);
+    // }
+    // catch(error: any){
+    //     if (error.message.includes("User already exists")){
+    //         return res.status(HttpStatusCodes.CONFLICT).json({status: 409, message: error.message});
+    //     }
+    //     else if (error.message.includes("Name must atleast 2 characters long")){
+    //         return res.status(HttpStatusCodes.CONFLICT).json({status: 409, message: error.message});
+    //     }
+    //     else if (error.message.includes("Password must be atleast 8 characters long")){
+    //         return res.status(HttpStatusCodes.CONFLICT).json({status: 409, message: error.message});
+    //     }
+    //     return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json(error.message)
+    // }
 }
 
 // Update existing user data

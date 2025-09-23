@@ -34,10 +34,6 @@ export const fetchUsers = async (): Promise<UserResponse[]> => {
       name: true,
       email: true,
       bio: true,
-<<<<<<< Updated upstream
-      // role: true
-=======
->>>>>>> Stashed changes
     },
     orderBy: {
       id: 'asc',
@@ -106,24 +102,16 @@ export const signinUser = async (user: User): Promise<{token: string, refreshTok
     role: findUser.role
   }
 
-<<<<<<< Updated upstream
-  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string,{expiresIn: '1h'});
-
-  const refreshToken = jwt.sign(payload,process.env.JWT_SECRET_KEY as string, { expiresIn: '1D'}); 
-
-  return {
-  token,refreshToken,
-=======
   const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string,{
     expiresIn :'15m'
   })
-  const refreshtToken = jwt.sign(payload, process.env.JWT_SECRET_KEY as string,{
+  const refreshToken = jwt.sign(payload, process.env.JWT_SECRET_KEY as string,{
     expiresIn :'7d'
   })
 
   return {
-  token,refreshtToken,
->>>>>>> Stashed changes
+  token,
+  refreshToken,
   user: {
     id: findUser.id,
     name: findUser.name,
