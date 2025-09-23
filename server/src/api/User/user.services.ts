@@ -25,7 +25,7 @@ type JWTPayload = {
   id: string;
   email: string;
   role: Role;
-}
+};
 
 export const fetchUsers = async (): Promise<UserResponse[]> => {
   return db.user.findMany({
@@ -48,7 +48,8 @@ export const fetchUser = async (id: string): Promise<UserResponse | null> => {
       id: true,
       name: true,
       email: true,
-      bio: true, role:true
+      bio: true,
+      role: true,
     },
   });
 };
@@ -73,12 +74,14 @@ export const createUser = async (user: Omit<User, 'id'>): Promise<User> => {
       name,
       email,
       password: hashedPassword,
-      bio
+      bio,
     },
   });
 };
 
-export const signinUser = async (user: User): Promise<{token: string, refreshToken: string, user: UserResponse}> => {
+export const signinUser = async (
+  user: User
+): Promise<{ token: string; refreshToken: string; user: UserResponse }> => {
   const { email, password } = user;
   const findUser = await db.user.findUnique({
     where: {
@@ -93,33 +96,36 @@ export const signinUser = async (user: User): Promise<{token: string, refreshTok
   const comparedPassword = await bcrypt.compare(password, findUser.password);
 
   if (!comparedPassword) {
-    throw new AppError("Invalid Credentials. Please try again", HttpStatusCodes.UNAUTHORIZED);
+    throw new AppError(
+      'Invalid Credentials. Please try again',
+      HttpStatusCodes.UNAUTHORIZED
+    );
   }
 
-  const payload: JWTPayload= {
+  const payload: JWTPayload = {
     id: findUser.id,
     email: findUser.email,
-    role: findUser.role
-  }
+    role: findUser.role,
+  };
 
-  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string,{
-    expiresIn :'15m'
-  })
-  const refreshToken = jwt.sign(payload, process.env.JWT_SECRET_KEY as string,{
-    expiresIn :'7d'
-  })
+  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string, {
+    expiresIn: '15m',
+  });
+  const refreshToken = jwt.sign(payload, process.env.JWT_SECRET_KEY as string, {
+    expiresIn: '7d',
+  });
 
   return {
-  token,
-  refreshToken,
-  user: {
-    id: findUser.id,
-    name: findUser.name,
-    email: findUser.email,
-    bio: findUser.bio
-  }
-} 
-}
+    token,
+    refreshToken,
+    user: {
+      id: findUser.id,
+      name: findUser.name,
+      email: findUser.email,
+      bio: findUser.bio,
+    },
+  };
+};
 
 export const updateUser = async (
   id: string,
@@ -128,7 +134,7 @@ export const updateUser = async (
   const { name, email, password, bio } = user;
 
   let hashedPassword = password;
-  if (password){
+  if (password) {
     hashedPassword = await bcrypt.hash(password, 10);
   }
   return db.user.update({
@@ -139,7 +145,7 @@ export const updateUser = async (
       name,
       email,
       password: hashedPassword,
-      bio
+      bio,
     },
   });
 };
@@ -149,4 +155,3 @@ export const deleteUser = async (id: string): Promise<void> => {
     where: { id: id },
   });
 };
-
