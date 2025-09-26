@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import * as UserControllers from './user.controllers.ts';
-import { isAdmin } from '@middlewares/isAdmin.middleware.ts';
 import { isAuthUser } from '@middlewares/isAuthUser.middleware.ts';
 import { errorHandler } from '@utils/error-handler.ts';
 import {
@@ -14,13 +13,14 @@ import {
   updatePasswordSchema,
   userIdSchema,
 } from '../../validation/user.validation.ts';
+import { isAdminAuth } from '@middlewares/isAdminAuth.middleware.ts';
 
 const router = Router();
 
-router.get('/all', isAdmin, UserControllers.fetchUsers);
+router.get('/all', isAdminAuth, UserControllers.fetchUsers);
 router.delete(
   '/:id',
-  [validateParams(userIdSchema), isAuthUser, isAdmin],
+  [validateParams(userIdSchema), isAuthUser, isAdminAuth],
   UserControllers.deleteUser
 );
 router.get('/:id', validateParams(userIdSchema), UserControllers.fetchUser);

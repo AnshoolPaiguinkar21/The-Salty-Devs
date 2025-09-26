@@ -8,7 +8,7 @@ import {
   LoginUserInput,
   RegisterUserInput,
   UpdateUserInput,
-} from '../../validation/user.validation.ts';
+} from '@validation/user.validation.ts';
 
 export type User = {
   id: string;

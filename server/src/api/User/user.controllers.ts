@@ -7,7 +7,7 @@ import {
   LoginUserInput,
   UpdateUserInput,
   UpdatePasswordInput,
-} from '../../validation/user.validation.ts';
+} from '@validation/user.validation.ts';
 
 // Login
 export const signinUser = async (req: Request, res: Response) => {

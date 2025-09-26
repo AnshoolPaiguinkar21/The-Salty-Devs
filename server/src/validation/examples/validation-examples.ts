@@ -11,7 +11,7 @@ import {
   passwordSchema,
   emailSchema,
   nameSchema
-} from './user.validation.ts';
+} from '../user.validation.ts';
 
 // Example usage and testing of validation schemas
 export const validationExamples = {

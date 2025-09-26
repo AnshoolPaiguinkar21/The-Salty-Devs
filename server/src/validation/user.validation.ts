@@ -66,7 +66,7 @@ export const userIdSchema = z.object({
   id: z.uuid('Invalid user ID format'),
 });
 
-// Type exports for better TypeScript integration
+// Type exports for TypeScript integration
 export type RegisterUserInput = z.infer<typeof registerUserSchema>;
 export type LoginUserInput = z.infer<typeof loginUserSchema>;
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;
