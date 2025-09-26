@@ -1,10 +1,10 @@
 import express from 'express';
+import routes from '@routes/index.ts';
+import cookieParser from 'cookie-parser';
+import { errorHandler } from '@middlewares/errHandler.middleware.ts';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import cors from 'cors';
-import routes from '@routes/index.ts';
-import cookieParser from 'cookie-parser';
-import { errorHandler } from '@utils/error-handler.ts';
 import { limiter } from '@middlewares/rateLimit.middleware.ts';
 //import { errorHandler } from "@middlewares/errHandler.middleware.ts"
 
