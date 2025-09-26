@@ -96,10 +96,11 @@ export const getPosts = async (
         contains: search,
         mode: 'insensitive',
       },
+      published: true
     },
     orderBy: { createdAt: 'asc' },
   });
-  const totalCount = await db.post.count();
+  const totalCount = await db.post.count({where: {published: true}});
   return {
     data,
     totalCount,
