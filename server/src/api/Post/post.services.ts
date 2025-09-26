@@ -1,5 +1,5 @@
 import { db } from '@utils/db.config.ts';
-import type { User } from '../User/user.services.ts';
+import type { User } from '@api/User/user.services.ts';
 import { AppError } from '@utils/appError.ts';
 import { HttpStatusCodes } from '@utils/httpStatusCodes.ts';
 import { Comment } from '@prisma/client';
@@ -36,7 +36,7 @@ export type PostResponse = {
       id: string;
       name: string | null;
       email: string;
-    }
+    };
   }[];
 };
 
@@ -51,8 +51,14 @@ export type PostUpload = {
   //category    Category[]
 };
 
-export const getPosts = async (): Promise<PostResponse[]> => {
-  return db.post.findMany({
+export const getPosts = async (
+  skip: number,
+  take: number,
+  search: string
+): Promise<{ data: PostResponse[]; totalCount: number }> => {
+
+  // console.log(search)
+  const data = await db.post.findMany({
     select: {
       id: true,
       title: true,
@@ -69,23 +75,39 @@ export const getPosts = async (): Promise<PostResponse[]> => {
       },
       comments: {
         select: {
-          id:true,
-          content:true,
-          createdAt:true,
-          editedAt:true,
-          author:{
+          id: true,
+          content: true,
+          createdAt: true,
+          editedAt: true,
+          author: {
             select: {
-              id:true,
-              name:true,
-              email:true,
-            }
-          }
-        }
-      }
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      },
+    },
+    take,
+    skip,
+    where: {
+      title: {
+        contains: search,
+        mode: 'insensitive',
+      },
+      published: true
     },
     orderBy: { createdAt: 'asc' },
   });
+  const totalCount = await db.post.count({where: {published: true}});
+  return {
+    data,
+    totalCount,
+  };
 };
+
+export const totalPosts = await db.post.count();
 
 export const incrementPostView = async (
   postId: string,
@@ -145,19 +167,19 @@ export const getPost = async (
       },
       comments: {
         select: {
-          id:true,
-          content:true,
-          createdAt:true,
-          editedAt:true,
-          author:{
+          id: true,
+          content: true,
+          createdAt: true,
+          editedAt: true,
+          author: {
             select: {
-              id:true,
-              name:true,
-              email:true,
-            }
-          }
-        }
-      }
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      },
     },
   });
 };
@@ -220,11 +242,14 @@ export const updatePost = async (
   const existingPost = await db.post.findUnique({ where: { id } });
 
   if (!existingPost) {
-    throw new AppError("Post not found", HttpStatusCodes.NOT_FOUND);
+    throw new AppError('Post not found', HttpStatusCodes.NOT_FOUND);
   }
 
   if (existingPost.authorId !== userId) {
-    throw new AppError("Forbidden: You are not the author of this post.", HttpStatusCodes.FORBIDDEN);
+    throw new AppError(
+      'Forbidden: You are not the author of this post.',
+      HttpStatusCodes.FORBIDDEN
+    );
   }
 
   return db.post.update({
@@ -234,7 +259,7 @@ export const updatePost = async (
     data: {
       title,
       content,
-      updatedAt
+      updatedAt,
     },
     select: {
       id: true,
