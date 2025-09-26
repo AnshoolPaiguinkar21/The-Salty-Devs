@@ -22,7 +22,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import DarkModeToggle from '@/components/header/DarkModeToggle/page';
+import DarkModeToggle from '@/components/header/DarkModeToggle';
 
 interface MenuItem {
   title: string;

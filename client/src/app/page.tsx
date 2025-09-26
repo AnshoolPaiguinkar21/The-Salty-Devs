@@ -1,28 +1,11 @@
 import React from 'react';
-import PostCard from '@/components/postCard/page';
+import { Post } from '@/types';
+import { getAllPosts } from '@/lib/api';
+import PostCard from '@/components/postCard';
 
-const posts = [
-  {
-    id: '1',
-    title: 'Getting Started with React',
-    excerpt: 'Learn the basics of React development.',
-    date: '2024-01-15',
-    slug: 'getting-started-with-react',
-    author: 'John Doe',
-    tags: ['react', 'javascript'],
-  },
-  {
-    id: '2',
-    title: 'Advanced TypeScript Tips',
-    excerpt: 'Master TypeScript with these advanced techniques.',
-    date: '2024-01-10',
-    slug: 'advanced-typescript-tips',
-    author: 'Jane Smith',
-    tags: ['typescript', 'advanced'],
-  },
-];
-
-export default function Home() {
+export default async function Home() {
+  const posts: Post[] = await getAllPosts();
+  console.log(posts);
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="text-center mb-12">
