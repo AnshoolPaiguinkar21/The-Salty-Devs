@@ -5,7 +5,7 @@ import PostCard from '@/components/postCard';
 
 export default async function Home() {
   const posts: Post[] = await getAllPosts();
-  console.log(posts);
+  // console.log(posts);
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="text-center mb-12">
