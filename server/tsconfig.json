@@ -34,7 +34,8 @@
       "@routes/*": ["routes/*"],
       "@modules/*": ["modules/*"],
       "@utils/*": ["utils/*"],
-      "@middlewares/*": ["middlewares/*"]
+      "@middlewares/*": ["middlewares/*"],
+      "@validation/*": ["validation/*"]
     }
   },
   "include": ["src"],

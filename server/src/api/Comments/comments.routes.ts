@@ -5,7 +5,7 @@ import { isCommentAuthorOrAdmin } from '@middlewares/isCommentAuthorOrAdmin.midd
 
 const router = Router();
 
-router.get('/', CommentController.getComments);
+router.get('/:postId', CommentController.getCommentsByPost);
 router.get('/:id', CommentController.getComment);
 router.post('/', isAuthUser, CommentController.addComment);
 router.put(
