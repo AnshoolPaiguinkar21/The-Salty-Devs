@@ -147,9 +147,9 @@ export const refreshToken = async (req: Request, res: Response) => {
             }
 
             const payload = {
-            id: (decoded as any).id,
-            email: (decoded as any).email,
-            role: (decoded as any).role,
+            id: decoded.id,
+            email: decoded.email,
+            role: decoded.role,
             };
 
             // Generate new access token
@@ -162,7 +162,7 @@ export const refreshToken = async (req: Request, res: Response) => {
             // (Optional) Generate a new refresh token too
             const newRefreshToken = jwt.sign(
             payload,
-            process.env.JWT_SECRET_KEY as string,
+            process.env.JWT_REFRESH_SECRET_KEY as string,
             { expiresIn: "1d" }
             );
 

@@ -105,7 +105,7 @@ export const signinUser = async (user: User): Promise<{token: string, refreshTok
 
   const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string,{expiresIn: '1h'});
 
-  const refreshToken = jwt.sign(payload,process.env.JWT_SECRET_KEY as string, { expiresIn: '1D'}); 
+  const refreshToken = jwt.sign(payload,process.env.JWT_REFRESH_SECRET_KEY as string, { expiresIn: '1D'}); 
 
   return {
   token,refreshToken,
