@@ -1,9 +1,7 @@
 import { db } from '@utils/db.config.ts';
 
 test('test db connection', async () => {
-  
-  await db.user.deleteMany();
- // Insert
+  // Insert
   const user = await db.user.create({
     data: { name: 'Test', email: 'test@example.com', bio: 'test bio', password: 'hashed' },
   });
@@ -15,5 +13,5 @@ test('test db connection', async () => {
   expect(found?.email).toBe('test@example.com');
 
   // Clean up
-  await db.user.deleteMany();
+  await db.user.delete({ where: { id: user.id } });
 });
