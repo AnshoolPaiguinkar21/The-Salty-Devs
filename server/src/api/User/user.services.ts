@@ -121,8 +121,6 @@ export const signinUser = async (
     expiresIn: config.REFRESH_TOKEN_EXPIRES_IN,
   });
 
-  const refreshToken = jwt.sign(payload,process.env.JWT_REFRESH_SECRET_KEY as string, { expiresIn: '1D'}); 
-
   return {
     token,
     refreshToken,
