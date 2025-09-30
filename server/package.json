@@ -9,8 +9,8 @@
     "start": "tsx src/server.ts",
     "dev": "nodemon --watch src --ext ts --exec \"tsx src/server.ts\"",
     "prisma:generate": "prisma generate",
-    "test": "dotenv -e .env.test jest "
-    "seed": "tsx prisma/seed.ts",
+    "test": "dotenv -e .env.test jest ",
+    "seed": "tsx prisma/seed.ts"
   },
   "repository": {
     "type": "git",
@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/anshoolp-endure/The-Salty-Devs#readme",
   "dependencies": {
-    "@prisma/client": "^6.16.2",
+    "@prisma/client": "^6.16.3",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -51,12 +51,12 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.6.0",
     "@types/supertest": "^6.0.3",
-    "cross-env": "^10.0.0",
+    "cross-env": "^10.1.0",
     "dotenv-cli": "^10.0.0",
     "esbuild-register": "^3.6.0",
     "jest": "^30.2.0",
     "nodemon": "^3.1.10",
-    "prisma": "^6.16.2",
+    "prisma": "^6.16.3",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.4",
     "ts-node": "^10.9.2",
