@@ -30,11 +30,11 @@ export const getPosts = async (req: Request, res: Response) => {
 };
 
 export const getPost = async (req: Request, res: Response) => {
-  const id: string = req.params.id;
+  const slug: string = req.params.slug;
   const userId = req.user?.id || 'guest';
 
   try {
-    const uniquePost = await PostServices.getPost(userId, id);
+    const uniquePost = await PostServices.getPost(userId, slug);
     return res.status(HttpStatusCodes.OK).json(uniquePost);
   } catch (error: any) {
     return res
@@ -67,7 +67,7 @@ export const createPost = async (req: Request, res: Response) => {
 };
 
 export const updatePost = async (req: Request, res: Response) => {
-  const id: string = req.params.id;
+  const slug: string = req.params.slug;
 
   if (!req.user || req.user.role !== 'ADMIN') {
     return res
@@ -79,7 +79,7 @@ export const updatePost = async (req: Request, res: Response) => {
 
   try {
     const updateAuthorPost = await PostServices.updatePost(
-      id,
+      slug,
       userId,
       req.body
     );
