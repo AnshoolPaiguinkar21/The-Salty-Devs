@@ -18,7 +18,9 @@ export interface Comment {
 export interface Post {
   id: string;
   title: string;
+  slug: string;
   content: string;
+  views: number;
   publishedAt: string | null; // Can be null
   updatedAt: string; // Or Date
   imageURL: string | null; // Can be null
