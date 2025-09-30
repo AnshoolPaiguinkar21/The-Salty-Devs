@@ -8,6 +8,7 @@ import {
   UpdateUserInput,
   UpdatePasswordInput,
 } from '@validation/user.validation.ts';
+import config from 'constants/config.ts';
 
 // Login
 export const signinUser = async (req: Request, res: Response) => {
@@ -180,17 +181,17 @@ export const refreshToken = async (req: Request, res: Response) => {
         // Generate new access token
         const newAccessToken = jwt.sign(
           payload,
-          process.env.JWT_SECRET_KEY as string,
-          { expiresIn: '1h' }
+          config.JWT_SECRET_KEY as string,
+          { expiresIn: config.ACCESS_TOKEN_EXPIRES_IN }
         );
 
-            // (Optional) Generate a new refresh token too
-            const newRefreshToken = jwt.sign(
-            payload,
-            process.env.JWT_REFRESH_SECRET_KEY as string,
-            { expiresIn: "1d" }
-            );
-
+        
+        // (Optional) Generate a new refresh token too
+        const newRefreshToken = jwt.sign(
+        payload,
+        config.JWT_REFRESH_SECRET_KEY as string,
+        { expiresIn: config.REFRESH_TOKEN_EXPIRES_IN }
+        );
         // Reset cookies
         res.cookie('jwt', newAccessToken, {
           httpOnly: true,
