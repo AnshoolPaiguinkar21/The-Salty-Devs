@@ -13,8 +13,8 @@ const PostCard = ({ post }: PostCardProps) => {
     <Link href={`/articles/${post.id}`}>
       <article className="group bg-card border border-border p-6 hover:gradient-border transition-all duration-300 h-full flex flex-col">
         <div className="space-y-4 flex-1">
-          {/* Category and View Count
-          <div className="flex items-center justify-between">
+          {/* Category and View Count*/}
+          {/* <div className="flex items-center justify-between">
             <Badge variant="secondary" className="text-xs">
               {post.category}
             </Badge>
@@ -51,20 +51,20 @@ const PostCard = ({ post }: PostCardProps) => {
           </div>
 
           {/* Tags */}
-          {/* {tags.length > 0 && (
+          {post.tags?.length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {tags.slice(0, 3).map((tag) => (
+              {post.tags.slice(0, 3).map((tag) => (
                 <Badge key={tag} variant="outline" className="text-xs">
                   {tag}
                 </Badge>
               ))}
-              {tags.length > 3 && (
+              {post.tags.length > 3 && (
                 <Badge variant="outline" className="text-xs">
-                  +{tags.length - 3}
+                  +{post.tags.length - 3}
                 </Badge>
               )}
             </div>
-          )} */}
+          )}
         </div>
       </article>
     </Link>
