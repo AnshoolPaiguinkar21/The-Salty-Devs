@@ -1,10 +1,10 @@
 import React from 'react';
-import { Post } from '@/types';
 import { getAllPosts } from '@/lib/api';
 import PostCard from '@/components/postCard';
 
 export default async function Home() {
-  const posts: Post[] = await getAllPosts();
+  const { posts, totalCount } = await getAllPosts();
+  console.log('Total Posts fetched:', totalCount);
 
   return (
     <main className="container mx-auto px-4 py-8">
