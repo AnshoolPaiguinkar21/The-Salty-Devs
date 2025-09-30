@@ -35,7 +35,8 @@
       "@modules/*": ["modules/*"],
       "@utils/*": ["utils/*"],
       "@middlewares/*": ["middlewares/*"],
-      "@validation/*": ["validation/*"]
+      "@validation/*": ["validation/*"],
+      "@constants/*": ["constants/*"]
     }
   },
   "include": ["src"],

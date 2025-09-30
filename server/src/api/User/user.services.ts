@@ -9,7 +9,7 @@ import {
   RegisterUserInput,
   UpdateUserInput,
 } from '@validation/user.validation.ts';
-import config from 'constants/config.ts';
+import config from '@constants/config.ts';
 
 export type User = {
   id: string;
@@ -24,7 +24,8 @@ export type UserResponse = {
   id: string;
   name: string | null;
   email: string;
-  bio: string | null;
+  bio?: string | null;
+  role: Role;
 };
 
 type JWTPayload = {
@@ -40,6 +41,7 @@ export const fetchUsers = async (): Promise<UserResponse[]> => {
       name: true,
       email: true,
       bio: true,
+      role:true,
     },
     orderBy: {
       id: 'asc',
@@ -114,10 +116,10 @@ export const signinUser = async (
     role: findUser.role,
   };
 
-  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string, {
+  const token = jwt.sign(payload, config.JWT_SECRET_KEY as string, {
     expiresIn: config.ACCESS_TOKEN_EXPIRES_IN,
   });
-  const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET_KEY  as string, {
+  const refreshToken = jwt.sign(payload, config.JWT_REFRESH_SECRET_KEY  as string, {
     expiresIn: config.REFRESH_TOKEN_EXPIRES_IN,
   });
 
@@ -129,6 +131,7 @@ export const signinUser = async (
       name: findUser.name,
       email: findUser.email,
       bio: findUser.bio,
+      role:findUser.role,
     },
   };
 };
