@@ -24,4 +24,5 @@ export interface Post {
   imageURL: string | null; // Can be null
   author: Author;
   comments: Comment[];
+  tags: string[];
 }
