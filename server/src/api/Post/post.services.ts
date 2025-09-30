@@ -8,32 +8,35 @@ import * as slugifyModule from 'slugify';
 // Assign the callable function (usually found on .default) to a clean variable name.
 const slugify = (slugifyModule as any).default || slugifyModule;
 
-const generateUniqueSlug = async (baseSlug: string, excludePostId?: string): Promise<string> => {
-    let uniqueSlug = baseSlug;
-    let counter = 1;
+const generateUniqueSlug = async (
+  baseSlug: string,
+  excludePostId?: string
+): Promise<string> => {
+  let uniqueSlug = baseSlug;
+  let counter = 1;
 
-    while (true) {
-        // Setup the condition to check for the slug
-        const whereCondition: any = { slug: uniqueSlug };
-        
-        // If an ID is provided (during an update), exclude that post from the check
-        if (excludePostId) {
-            whereCondition.NOT = { id: excludePostId };
-        }
+  while (true) {
+    // Setup the condition to check for the slug
+    const whereCondition: any = { slug: uniqueSlug };
 
-        const existingPost = await db.post.findFirst({
-            where: whereCondition,
-            select: { id: true }
-        });
-
-        if (!existingPost) {
-            return uniqueSlug; // Found a unique slug
-        }
-
-        // If conflict, increment counter and check again (e.g., base-slug-2, base-slug-3, etc.)
-        counter++;
-        uniqueSlug = `${baseSlug}-${counter}`;
+    // If an ID is provided (during an update), exclude that post from the check
+    if (excludePostId) {
+      whereCondition.NOT = { id: excludePostId };
     }
+
+    const existingPost = await db.post.findFirst({
+      where: whereCondition,
+      select: { id: true },
+    });
+
+    if (!existingPost) {
+      return uniqueSlug; // Found a unique slug
+    }
+
+    // If conflict, increment counter and check again (e.g., base-slug-2, base-slug-3, etc.)
+    counter++;
+    uniqueSlug = `${baseSlug}-${counter}`;
+  }
 };
 
 export type PostRead = {
@@ -94,13 +97,12 @@ export const getPosts = async (
   take: number,
   search: string
 ): Promise<{ data: PostResponse[]; totalCount: number }> => {
-
   // console.log(search)
   const data = await db.post.findMany({
     select: {
       id: true,
       title: true,
-      slug:true, 
+      slug: true,
       description: true,
       content: true,
       publishedAt: true,
@@ -136,11 +138,11 @@ export const getPosts = async (
         contains: search,
         mode: 'insensitive',
       },
-      published: true
+      published: true,
     },
     orderBy: { createdAt: 'asc' },
   });
-  const totalCount = await db.post.count({where: {published: true}});
+  const totalCount = await db.post.count({ where: { published: true } });
   return {
     data,
     totalCount,
@@ -185,13 +187,12 @@ export const getPost = async (
   userId: string,
   slug: string
 ): Promise<PostResponse | null> => {
-
   const post = await db.post.findFirst({
     where: { slug },
     select: {
       id: true,
       title: true,
-      slug:true,
+      slug: true,
       description: true,
       content: true,
       createdAt: true,
@@ -223,11 +224,11 @@ export const getPost = async (
     },
   });
 
-  if(!post){
+  if (!post) {
     return null;
   }
 
-  if (userId){
+  if (userId) {
     await incrementPostView(post.id, userId);
   }
 
@@ -235,7 +236,6 @@ export const getPost = async (
 };
 
 export const createPost = async (post: PostUpload): Promise<PostResponse> => {
-
   const {
     title,
     authorId,
@@ -257,8 +257,8 @@ export const createPost = async (post: PostUpload): Promise<PostResponse> => {
   const baseSlug = slugify(title, {
     lower: true,
     strict: true,
-    trim: true
-  })
+    trim: true,
+  });
 
   const postSlug = await generateUniqueSlug(baseSlug);
 
@@ -300,7 +300,10 @@ export const updatePost = async (
 ): Promise<PostResponse> => {
   const { title, description, content, published, updatedAt } = post;
 
-  const existingPost = await db.post.findFirst({ where: { slug }, select: {id:true, authorId:true, title:true, slug:true} });
+  const existingPost = await db.post.findFirst({
+    where: { slug },
+    select: { id: true, authorId: true, title: true, slug: true },
+  });
 
   if (!existingPost) {
     throw new AppError('Post not found', HttpStatusCodes.NOT_FOUND);
@@ -317,9 +320,9 @@ export const updatePost = async (
 
   let postSlug = existingPost.slug;
 
-  if(title && title !== existingPost.title){
-    const baseSlug = slugify(title, {lower:true, strict:true, trim:true})
-    postSlug = await generateUniqueSlug(baseSlug, postId)
+  if (title && title !== existingPost.title) {
+    const baseSlug = slugify(title, { lower: true, strict: true, trim: true });
+    postSlug = await generateUniqueSlug(baseSlug, postId);
   }
 
   return db.post.update({
@@ -332,13 +335,13 @@ export const updatePost = async (
       content,
       updatedAt,
       published,
-      ...(title && title !== existingPost.title  && {slug: postSlug}),
+      ...(title && title !== existingPost.title && { slug: postSlug }),
     },
     select: {
       id: true,
       title: true,
       slug: true,
-      description:true,
+      description: true,
       content: true,
       published: true,
       publishedAt: true,

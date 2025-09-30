@@ -4,7 +4,10 @@ import { fromZodError } from 'zod-validation-error';
 const envSchema = z.object({
   PORT: z.coerce.number().default(4000), // PORT: 4000 by default 
   DATABASE_URL: z.url(), 
-  JWT_SECRET_KEY: z.string().min(7)
+  JWT_SECRET_KEY: z.string().min(7),
+  JWT_REFRESH_SECRET_KEY: z.string().min(7),
+  ACCESS_TOKEN_EXPIRES_IN: z.coerce.number(), // 1 hour (3600 seconds)
+  REFRESH_TOKEN_EXPIRES_IN: z.coerce.number(), // 24 hours (86400 seconds)
 });
 
 let config: z.infer<typeof envSchema>;

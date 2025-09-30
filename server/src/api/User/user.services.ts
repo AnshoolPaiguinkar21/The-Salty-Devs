@@ -9,6 +9,7 @@ import {
   RegisterUserInput,
   UpdateUserInput,
 } from '@validation/user.validation.ts';
+import config from 'constants/config.ts';
 
 export type User = {
   id: string;
@@ -113,12 +114,14 @@ export const signinUser = async (
     role: findUser.role,
   };
 
-  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string, {
-    expiresIn: '15m',
+  const token = jwt.sign(payload, config.JWT_SECRET_KEY as string, {
+    expiresIn: config.ACCESS_TOKEN_EXPIRES_IN,
   });
-  const refreshToken = jwt.sign(payload, process.env.JWT_SECRET_KEY as string, {
-    expiresIn: '7d',
+  const refreshToken = jwt.sign(payload, config.JWT_REFRESH_SECRET_KEY  as string, {
+    expiresIn: config.REFRESH_TOKEN_EXPIRES_IN,
   });
+
+  const refreshToken = jwt.sign(payload,process.env.JWT_REFRESH_SECRET_KEY as string, { expiresIn: '1D'}); 
 
   return {
     token,
@@ -126,7 +129,7 @@ export const signinUser = async (
     user: {
       id: findUser.id,
       name: findUser.name,
-      email: findUser.email,
+      email: findUser.email, 
       bio: findUser.bio,
     },
   };
