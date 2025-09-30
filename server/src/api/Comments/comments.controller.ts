@@ -9,7 +9,7 @@ export const getCommentsByPost = async (req: Request, res: Response) => {
     const posts = await CommentServices.getCommentsByPost(
       postId,
       Number(req.query.skip) || 0,
-      Number(req.query.take) || CommentServices.totalComments
+      Number(req.query.take) || 10
     );
     return res.status(HttpStatusCodes.OK).json(posts);
   } catch (error: any) {

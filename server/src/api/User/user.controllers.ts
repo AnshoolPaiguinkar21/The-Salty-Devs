@@ -32,15 +32,23 @@ export const signinUser = async (req: Request, res: Response) => {
     });
     return res.status(HttpStatusCodes.OK).json(existingUser);
   } catch (error: any) {
+    const remainingAttempts = req.rateLimit?.remaining ?? null;
+    let customErrorDetails: { message: string, remaining?: number | null } = { message: error.message };
     if (
       error.message.includes('Invalid Credentials. Please try again') ||
       error.message.includes('User does not exist') ||
       error.message.includes('Unauthorized: No token provided.')
     ) {
+      if (remainingAttempts!== null){
+        customErrorDetails.remaining = remainingAttempts;
+        customErrorDetails.message = `Invalid credentials. You have ${remainingAttempts} attempts remaining`;
+      }
+      
       return res
         .status(HttpStatusCodes.UNAUTHORIZED)
-        .json({ message: error.message });
+        .json({ customErrorDetails });
     }
+    
     return res
       .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
       .json(error.message);
