@@ -34,24 +34,29 @@
     "dotenv": "^17.2.2",
     "esbuild": "^0.25.10",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
     "express-validator": "^7.2.1",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "the-salty-devs": "file:.."
+    "morgan": "^1.10.1",
+    "the-salty-devs": "file:..",
+    "zod": "^4.1.11",
+    "zod-validation-error": "^4.0.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
-    "@types/bcryptjs": "^3.0.0",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
-    "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.3",
+    "@types/helmet": "^4.0.0",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
     "@types/node": "^24.5.2",
     "esbuild-register": "^3.6.0",
     "nodemon": "^3.1.10",
     "prisma": "^6.16.2",
     "ts-node": "^10.9.2",
-    "tsx": "^4.20.5",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.2"
   }
 }
