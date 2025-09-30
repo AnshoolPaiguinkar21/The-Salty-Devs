@@ -1,4 +1,5 @@
 import { fetchUser } from '@api/User/user.services.ts';
+import { fetchUsers } from '@api/User/user.services.ts';
 import { db } from '@utils/db.config.ts';
 
 test('test db connection', async () => {
@@ -18,6 +19,32 @@ test('test db connection', async () => {
   // Clean up
   await db.user.deleteMany();
 });
+
+describe('Testing for fetch Users function', async()=>{
+  it('Should fetch all users', async()=>{
+    await db.user.deleteMany();
+    const user1 = await db.user.create({
+      data:{
+        name: 'Syndroy',
+        email: 'syndroyaraujo@gmail.com',
+        bio: 'hello',
+        password: '12345678',
+        role:'USER'
+      },
+    });
+    const user2 = await db.user.create({
+      data:{
+        name: 'Bob',
+        email: 'bob@gmail.com',
+        bio: 'hello world',
+        password: 'password',
+        role: 'USER'
+      },
+    });
+    expect(await fetchUsers()).toEqual(user)
+  })
+})
+
 
 describe(' Testing for Fetch User function', ()=>{
   it('should fetch user the correct user by id', async()=>{
@@ -54,7 +81,8 @@ describe(' Testing for Fetch User function', ()=>{
 
   it('Should return null if the user does not exist', async()=>{
     await db.user.deleteMany();
-    const result = await fetchUser
+    expect(await fetchUser('')).toBe(null);
+    await db.user.deleteMany();
   })
   
 })
