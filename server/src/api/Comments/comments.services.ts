@@ -39,8 +39,9 @@ export type CommentAdd = {
   postId: string; //number
 };
 
-export const getComments = async (): Promise<CommentResponse[]> => {
-  return db.comment.findMany({
+export const getCommentsByPost = async (postId:string, skip:number, take:number): Promise<{data:CommentResponse[]; totalComments:number}> => {
+  const data = await db.comment.findMany({
+    where: {postId},
     select: {
       id: true,
       content: true,
@@ -59,9 +60,18 @@ export const getComments = async (): Promise<CommentResponse[]> => {
         },
       },
     },
+    skip,
+    take,
     orderBy: { createdAt: 'asc' },
   });
+  const totalComments = await db.comment.count({where: {postId}});
+  return {
+    data,
+    totalComments
+  }
 };
+
+export const totalComments = await db.comment.count();
 
 export const getComment = async (
   id: string
@@ -99,7 +109,7 @@ export const addComment = async (
   return db.comment.create({
     data: {
       postId,
-      authorId,
+      authorId ,
       content,
       createdAt: parsedDate,
     },

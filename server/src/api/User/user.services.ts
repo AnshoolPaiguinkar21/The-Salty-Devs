@@ -1,9 +1,15 @@
 import { db } from '@utils/db.config.ts';
 import { AppError } from '@utils/appError.ts';
 import { HttpStatusCodes } from '@utils/httpStatusCodes.ts';
-import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { Role } from '@prisma/client';
+import {
+  LoginUserInput,
+  RegisterUserInput,
+  UpdateUserInput,
+} from '@validation/user.validation.ts';
+import config from 'constants/config.ts';
 
 export type User = {
   id: string;
@@ -25,7 +31,7 @@ type JWTPayload = {
   id: string;
   email: string;
   role: Role;
-}
+};
 
 export const fetchUsers = async (): Promise<UserResponse[]> => {
   return db.user.findMany({
@@ -34,7 +40,6 @@ export const fetchUsers = async (): Promise<UserResponse[]> => {
       name: true,
       email: true,
       bio: true,
-      // role: true
     },
     orderBy: {
       id: 'asc',
@@ -49,12 +54,13 @@ export const fetchUser = async (id: string): Promise<UserResponse | null> => {
       id: true,
       name: true,
       email: true,
-      bio: true, role:true
+      bio: true,
+      role: true,
     },
   });
 };
 
-export const createUser = async (user: Omit<User, 'id'>): Promise<User> => {
+export const createUser = async (user: RegisterUserInput): Promise<User> => {
   const { name, email, password, bio } = user;
   const findUser = await db.user.findUnique({
     where: {
@@ -74,12 +80,14 @@ export const createUser = async (user: Omit<User, 'id'>): Promise<User> => {
       name,
       email,
       password: hashedPassword,
-      bio
+      bio,
     },
   });
 };
 
-export const signinUser = async (user: User): Promise<{token: string, refreshToken: string, user: UserResponse}> => {
+export const signinUser = async (
+  user: LoginUserInput
+): Promise<{ token: string; refreshToken: string; user: UserResponse }> => {
   const { email, password } = user;
   const findUser = await db.user.findUnique({
     where: {
@@ -94,40 +102,43 @@ export const signinUser = async (user: User): Promise<{token: string, refreshTok
   const comparedPassword = await bcrypt.compare(password, findUser.password);
 
   if (!comparedPassword) {
-    throw new AppError("Invalid Credentials. Please try again", HttpStatusCodes.UNAUTHORIZED);
+    throw new AppError(
+      'Invalid Credentials. Please try again',
+      HttpStatusCodes.UNAUTHORIZED
+    );
   }
 
-  const payload: JWTPayload= {
+  const payload: JWTPayload = {
     id: findUser.id,
     email: findUser.email,
-    role: findUser.role
-  }
+    role: findUser.role,
+  };
 
-  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string,{expiresIn: '1h'});
-
-  const refreshToken = jwt.sign(payload,process.env.JWT_SECRET_KEY as string, { expiresIn: '1D'}); 
+  const token = jwt.sign(payload, config.JWT_SECRET_KEY as string, {
+    expiresIn: config.ACCESS_TOKEN_EXPIRES_IN,
+  });
+  const refreshToken = jwt.sign(payload, config.JWT_REFRESH_SECRET_KEY  as string, {
+    expiresIn: config.REFRESH_TOKEN_EXPIRES_IN,
+  });
 
   return {
-  token,refreshToken,
-  user: {
-    id: findUser.id,
-    name: findUser.name,
-    email: findUser.email,
-    bio: findUser.bio
-  }
-} 
-}
+    token,
+    refreshToken,
+    user: {
+      id: findUser.id,
+      name: findUser.name,
+      email: findUser.email, 
+      bio: findUser.bio,
+    },
+  };
+};
 
 export const updateUser = async (
   id: string,
-  user: Omit<User, 'id'>
+  user: UpdateUserInput
 ): Promise<User> => {
-  const { name, email, password, bio } = user;
+  const { name, email, bio } = user;
 
-  let hashedPassword = password;
-  if (password){
-    hashedPassword = await bcrypt.hash(password, 10);
-  }
   return db.user.update({
     where: {
       id: id,
@@ -135,9 +146,39 @@ export const updateUser = async (
     data: {
       name,
       email,
-      password: hashedPassword,
-      bio
+      bio,
     },
+  });
+};
+
+export const updateUserPassword = async (
+  id: string,
+  currentPassword: string,
+  newPassword: string
+): Promise<void> => {
+  const user = await db.user.findUnique({
+    where: { id },
+  });
+
+  if (!user) {
+    throw new AppError('User not found', HttpStatusCodes.NOT_FOUND);
+  }
+
+  const isCurrentPasswordValid = await bcrypt.compare(
+    currentPassword,
+    user.password
+  );
+  if (!isCurrentPasswordValid) {
+    throw new AppError(
+      'Current password is incorrect',
+      HttpStatusCodes.UNAUTHORIZED
+    );
+  }
+
+  const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+  await db.user.update({
+    where: { id },
+    data: { password: hashedNewPassword },
   });
 };
 
@@ -146,4 +187,3 @@ export const deleteUser = async (id: string): Promise<void> => {
     where: { id: id },
   });
 };
-
