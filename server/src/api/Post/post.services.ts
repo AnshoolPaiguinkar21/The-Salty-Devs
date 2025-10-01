@@ -49,12 +49,18 @@ export type PostRead = {
   slug: string | null;
 };
 
+type PostCategory = {
+  id: string;
+  name: string;
+}
+
 export type PostResponse = {
   id: string;
   title: string;
   description?: string | null;
   content: string | null;
   slug: string | null;
+  category?: PostCategory | null;
   publishedAt: Date | null;
   updatedAt?: Date;
   createdAt?: Date;
@@ -78,6 +84,7 @@ export type PostResponse = {
       email: string;
     };
   }[];
+  tags?: string[];
 };
 
 export type PostUpload = {
@@ -89,7 +96,8 @@ export type PostUpload = {
   publishedAt: Date;
   updatedAt: Date;
   imageURL?: string;
-  //category    Category[]
+  categoryId?: string; 
+  tags?:string[];
 };
 
 export const getPosts = async (
@@ -108,6 +116,9 @@ export const getPosts = async (
       publishedAt: true,
       updatedAt: true,
       imageURL: true,
+      category: {
+        select: {id:true, name:true}
+      },
       author: {
         select: {
           id: true,
@@ -199,6 +210,11 @@ export const getPost = async (
       updatedAt: true,
       publishedAt: true,
       views: true,
+      category: {
+        select: {
+          id:true, name:true
+        }
+      },
       author: {
         select: {
           id: true,
@@ -245,6 +261,8 @@ export const createPost = async (post: PostUpload): Promise<PostResponse> => {
     publishedAt,
     updatedAt,
     imageURL,
+    categoryId,
+    tags
   } = post;
 
   if (!authorId || !title || !content) {
@@ -269,10 +287,12 @@ export const createPost = async (post: PostUpload): Promise<PostResponse> => {
       slug: postSlug,
       description,
       content,
+      categoryId: categoryId || null,
       published,
       publishedAt,
       updatedAt,
       imageURL,
+      tags
     },
     select: {
       id: true,
@@ -281,6 +301,7 @@ export const createPost = async (post: PostUpload): Promise<PostResponse> => {
       content: true,
       published: true,
       publishedAt: true,
+      tags: true,
       author: {
         select: {
           id: true,
@@ -298,7 +319,7 @@ export const updatePost = async (
   userId: string,
   post: PostUpload
 ): Promise<PostResponse> => {
-  const { title, description, content, published, updatedAt } = post;
+  const { title, description, content, published, updatedAt, categoryId, tags } = post;
 
   const existingPost = await db.post.findFirst({
     where: { slug },
@@ -335,6 +356,8 @@ export const updatePost = async (
       content,
       updatedAt,
       published,
+      categoryId: categoryId || null,
+      tags,
       ...(title && title !== existingPost.title && { slug: postSlug }),
     },
     select: {
@@ -346,6 +369,12 @@ export const updatePost = async (
       published: true,
       publishedAt: true,
       updatedAt: true,
+      tags:true,
+      category: {
+        select: {
+          id:true, name:true
+        }
+      },
       author: {
         select: {
           id: true,
