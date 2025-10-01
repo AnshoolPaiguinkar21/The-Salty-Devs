@@ -44,7 +44,7 @@ export const fetchUsers = async (): Promise<UserResponse[]> => {
       role:true,
     },
     orderBy: {
-      id: 'asc',
+      createdAt: 'asc',
     },
   });
 };
