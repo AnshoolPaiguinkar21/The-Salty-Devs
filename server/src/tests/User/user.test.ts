@@ -3,27 +3,11 @@ import { fetchUsers } from '@api/User/user.services.ts';
 import { createUser } from '@api/User/user.services.ts';
 import { signinUser } from '@api/User/user.services.ts';
 import { updateUser } from '@api/User/user.services.ts';
+import { updateUserPassword } from '@api/User/user.services.ts';
+import { deleteUser } from '@api/User/user.services.ts';
 import { db } from '@utils/db.config.ts';
 import bcrypt from 'bcrypt';
 
-
-test('test db connection', async () => {
-  
-  await db.user.deleteMany();
- // Insert
-  const user = await db.user.create({
-    data: { name: 'Test', email: 'test@example.com', bio: 'test bio', password: 'hashed' },
-  });
-
-  // Read
-  const found = await db.user.findUnique({ where: { id: user.id } });
-
-  expect(found).not.toBeNull();
-  expect(found?.email).toBe('test@example.com');
-
-  // Clean up
-  await db.user.deleteMany();
-});
 describe('Testing the fetch Users function',()=>{
 
   it('Should fetch all users', async()=>{
@@ -254,18 +238,68 @@ describe('Testing the Update User function', ()=>{
   })
 })
 
-// describe('Testing the Update Password function', ()=>{
-//   it('Should return User not found when the user id is not found', async()=>{
-//     await db.user.deleteMany();
-//     const user = db.user.create({
-//       data:{
-//         name: 'Alice',
-//         email: 'alice@gmail.com',
-//         password:'12345678',
-//         bio: 'hello',
-//       }
-//     })
-//     const fakeId = 'abc';
-//     await expect(updateUserPassword)
-//   })
-// })
+describe('Testing the Update Password function', ()=>{
+  it("should update the password when current password is correct", async () => {
+    const hashedPassword = await bcrypt.hash("oldPassword", 10);
+    const user = await db.user.create({
+      data: {
+        name: "Alice",
+        email: "alice@gmail.com",
+        password: hashedPassword,
+        bio: "hello",
+      },
+    });
+
+    await updateUserPassword(user.id, "oldPassword", "newPassword");
+
+    const updatedUser = await db.user.findUnique({ where: { id: user.id } });
+
+    expect(updatedUser).not.toBeNull();
+
+    const isValid = await bcrypt.compare("newPassword", updatedUser!.password);
+    expect(isValid).toBe(true);
+  });
+
+  it("should throw an error if user does not exist", async () => {
+    await expect(
+      updateUserPassword("fake-id", "oldPassword", "newPassword")
+    ).rejects.toThrow("User not found");
+  });
+
+  it("should throw an error if current password is incorrect", async () => {
+    await db.user.deleteMany();
+    const hashedPassword = await bcrypt.hash("oldPassword", 10);
+    const user = await db.user.create({
+      data: {
+        name: "Alice",
+        email: "alice@gmail.com",
+        password: hashedPassword,
+        bio: "hello",
+      },
+    });
+
+    await expect( updateUserPassword(user.id, "wrongPass", "newPassword")
+    ).rejects.toThrow("Current password is incorrect");
+  })
+})
+
+describe('Testing the delete user function',()=>{
+  it('should delete a user when id exists or should return null when user does not exist', async () => {
+
+  await db.user.deleteMany();
+  const user = await db.user.create({
+    data: {
+      name: 'Alice',
+      email: 'alice@gmail.com',
+      password: '12345678',
+      bio: 'hello',
+    },
+  });
+
+ await deleteUser(user.id);
+
+  const findUser = await db.user.findUnique({ where: { id: user.id } });
+  expect(findUser).toBeNull();
+});
+
+})

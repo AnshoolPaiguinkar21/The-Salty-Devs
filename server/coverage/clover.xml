@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1759330955475" clover="3.2.0">
-  <project timestamp="1759330955475" name="All files">
-    <metrics statements="74" coveredstatements="60" conditionals="16" coveredconditionals="9" methods="9" coveredmethods="7" elements="99" coveredelements="76" complexity="0" loc="74" ncloc="74" packages="3" files="5" classes="5"/>
+<coverage generated="1759470014277" clover="3.2.0">
+  <project timestamp="1759470014277" name="All files">
+    <metrics statements="74" coveredstatements="69" conditionals="16" coveredconditionals="13" methods="9" coveredmethods="9" elements="99" coveredelements="91" complexity="0" loc="74" ncloc="74" packages="3" files="5" classes="5"/>
     <package name="api.User">
-      <metrics statements="43" coveredstatements="34" conditionals="10" coveredconditionals="6" methods="7" coveredmethods="5"/>
+      <metrics statements="43" coveredstatements="43" conditionals="10" coveredconditionals="10" methods="7" coveredmethods="7"/>
       <file name="user.services.ts" path="E:\The-Salty-Devs\server\src\api\User\user.services.ts">
-        <metrics statements="43" coveredstatements="34" conditionals="10" coveredconditionals="6" methods="7" coveredmethods="5"/>
+        <metrics statements="43" coveredstatements="43" conditionals="10" coveredconditionals="10" methods="7" coveredmethods="7"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -39,16 +39,16 @@
         <line num="143" count="2" type="stmt"/>
         <line num="145" count="2" type="stmt"/>
         <line num="157" count="1" type="stmt"/>
-        <line num="162" count="0" type="stmt"/>
-        <line num="166" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="167" count="0" type="stmt"/>
-        <line num="170" count="0" type="stmt"/>
-        <line num="174" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="175" count="0" type="stmt"/>
-        <line num="181" count="0" type="stmt"/>
-        <line num="182" count="0" type="stmt"/>
+        <line num="162" count="3" type="stmt"/>
+        <line num="166" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="167" count="1" type="stmt"/>
+        <line num="170" count="2" type="stmt"/>
+        <line num="174" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="175" count="1" type="stmt"/>
+        <line num="181" count="1" type="stmt"/>
+        <line num="182" count="1" type="stmt"/>
         <line num="188" count="1" type="stmt"/>
-        <line num="189" count="0" type="stmt"/>
+        <line num="189" count="1" type="stmt"/>
       </file>
     </package>
     <package name="constants">
@@ -73,11 +73,11 @@
       <file name="appError.ts" path="E:\The-Salty-Devs\server\src\utils\appError.ts">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="3" count="1" type="stmt"/>
-        <line num="6" count="3" type="stmt"/>
-        <line num="7" count="3" type="stmt"/>
-        <line num="8" count="3" type="stmt"/>
-        <line num="9" count="3" type="stmt"/>
-        <line num="10" count="3" type="stmt"/>
+        <line num="6" count="5" type="stmt"/>
+        <line num="7" count="5" type="stmt"/>
+        <line num="8" count="5" type="stmt"/>
+        <line num="9" count="5" type="stmt"/>
+        <line num="10" count="5" type="stmt"/>
       </file>
       <file name="db.config.ts" path="E:\The-Salty-Devs\server\src\utils\db.config.ts">
         <metrics statements="4" coveredstatements="4" conditionals="2" coveredconditionals="1" methods="0" coveredmethods="0"/>

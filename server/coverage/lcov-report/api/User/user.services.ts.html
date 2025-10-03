@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>41/50</span>
+                <span class='fraction'>50/50</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>6/10</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/7</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.06% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>34/43</span>
+                <span class='fraction'>43/43</span>
             </div>
         
             
@@ -416,34 +416,34 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -603,39 +603,39 @@ export const updateUser = async (
   });
 };
 &nbsp;
-export const updateUserPassword = <span class="fstat-no" title="function not covered" >async </span>(
+export const updateUserPassword = async (
   id: string,
   currentPassword: string,
   newPassword: string
 ): Promise&lt;void&gt; =&gt; {
-  const user = <span class="cstat-no" title="statement not covered" >await db.user.findUnique({</span>
+  const user = await db.user.findUnique({
     where: { id },
   });
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (!user) {</span>
-<span class="cstat-no" title="statement not covered" >    throw new AppError('User not found', HttpStatusCodes.NOT_FOUND);</span>
+  if (!user) {
+    throw new AppError('User not found', HttpStatusCodes.NOT_FOUND);
   }
 &nbsp;
-  const isCurrentPasswordValid = <span class="cstat-no" title="statement not covered" >await bcrypt.compare(</span>
+  const isCurrentPasswordValid = await bcrypt.compare(
     currentPassword,
     user.password
   );
-<span class="cstat-no" title="statement not covered" >  if (!isCurrentPasswordValid) {</span>
-<span class="cstat-no" title="statement not covered" >    throw new AppError(</span>
+  if (!isCurrentPasswordValid) {
+    throw new AppError(
       'Current password is incorrect',
       HttpStatusCodes.UNAUTHORIZED
     );
   }
 &nbsp;
-  const hashedNewPassword = <span class="cstat-no" title="statement not covered" >await bcrypt.hash(newPassword, 10);</span>
-<span class="cstat-no" title="statement not covered" >  await db.user.update({</span>
+  const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+  await db.user.update({
     where: { id },
     data: { password: hashedNewPassword },
   });
 };
 &nbsp;
-export const deleteUser = <span class="fstat-no" title="function not covered" >async </span>(id: string): Promise&lt;void&gt; =&gt; {
-<span class="cstat-no" title="statement not covered" >  await db.user.delete({</span>
+export const deleteUser = async (id: string): Promise&lt;void&gt; =&gt; {
+  await db.user.delete({
     where: { id: id },
   });
 };
@@ -646,7 +646,7 @@ export const deleteUser = <span class="fstat-no" title="function not covered" >a
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-10-01T15:02:35.439Z
+                at 2025-10-03T05:40:14.253Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
