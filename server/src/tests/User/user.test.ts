@@ -31,7 +31,6 @@ describe('Testing the fetch Users function',()=>{
       },
     });
     await expect(await fetchUsers()).not.toBe(null);
-    console.log('Testing Fetchusers',fetchUsers())
     await expect(await fetchUsers()).toEqual([
       {
         id: user1.id,
@@ -240,6 +239,7 @@ describe('Testing the Update User function', ()=>{
 
 describe('Testing the Update Password function', ()=>{
   it("should update the password when current password is correct", async () => {
+    await db.user.deleteMany();
     const hashedPassword = await bcrypt.hash("oldPassword", 10);
     const user = await db.user.create({
       data: {
@@ -258,6 +258,7 @@ describe('Testing the Update Password function', ()=>{
 
     const isValid = await bcrypt.compare("newPassword", updatedUser!.password);
     expect(isValid).toBe(true);
+    await db.user.deleteMany();
   });
 
   it("should throw an error if user does not exist", async () => {
@@ -280,7 +281,9 @@ describe('Testing the Update Password function', ()=>{
 
     await expect( updateUserPassword(user.id, "wrongPass", "newPassword")
     ).rejects.toThrow("Current password is incorrect");
+    await db.user.deleteMany();
   })
+  
 })
 
 describe('Testing the delete user function',()=>{
@@ -301,5 +304,4 @@ describe('Testing the delete user function',()=>{
   const findUser = await db.user.findUnique({ where: { id: user.id } });
   expect(findUser).toBeNull();
 });
-
 })
