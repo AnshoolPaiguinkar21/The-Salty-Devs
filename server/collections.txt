@@ -12,6 +12,11 @@ Create posts:
     "content": ""
 }
 
+update Posts:
+  for category: {
+  "categoryId": "7ac9ff69-a269-4a9c-970e-0d4b2fb0eade"
+}
+
 Update posts:
 {
       description: "All about India"

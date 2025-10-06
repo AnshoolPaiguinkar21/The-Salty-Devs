@@ -3,6 +3,8 @@ import type { User } from '@api/User/user.services.ts';
 import type { PostRead } from '@api/Post/post.services.ts';
 import { AppError } from '@utils/appError.ts';
 import { HttpStatusCodes } from '@utils/httpStatusCodes.ts';
+import {z} from 'zod';
+import { createCommentInput, createCommentSchema } from '@validation/comment.validation.ts';
 
 export type CommentRead = {
   id: string;
@@ -30,7 +32,7 @@ export type CommentResponse = {
   };
 };
 
-export type CommentAdd = {
+export type CommentAdd = createCommentInput & {
   content: string;
   createdAt: Date;
   // author: User,
@@ -96,6 +98,16 @@ export const getComment = async (
 export const addComment = async (
   comment: CommentAdd
 ): Promise<CommentResponse> => {
+
+  try {
+    createCommentSchema.parse(comment); 
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new AppError(error.message, HttpStatusCodes.BAD_REQUEST); //changed the error line
+    }
+    throw error;
+  }
+
   const { postId, authorId, content, createdAt } = comment;
 
   if (!postId || !authorId || !content) {
@@ -133,6 +145,16 @@ export const editComment = async (
   userId: string,
   comment: CommentAdd
 ): Promise<CommentResponse> => {
+
+  try {
+    createCommentSchema.parse(comment); 
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new AppError(error.message, HttpStatusCodes.BAD_REQUEST); //changed the error line
+    }
+    throw error;
+  }
+
   const { content } = comment;
 
   return db.comment.update({

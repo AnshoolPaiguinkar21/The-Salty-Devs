@@ -11,56 +11,51 @@ export type CategoryAdd = {
   name: string;
 };
 
+const postSelectFields = {
+  id: true,
+  title: true,
+  slug: true,
+  description: true,
+  content: true,
+  //published: true,
+  publishedAt: true,
+  updatedAt: true,
+  imageURL: true,
+  category: {
+    select: {id: true, name:true},
+  },
+  author: {
+    select: {
+      id: true,
+      name: true,
+    }
+  }
+}
+
 export const getCategories = async (): Promise<CategoryView[]> => {
-  return db.category.findMany({
+  return (await db.category.findMany({
     select: {
       id: true,
       name: true,
       posts: {
-        select: {
-          id: true,
-          title: true,
-          content: true,
-          publishedAt: true,
-          updatedAt: true,
-          author: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-        },
+        select: postSelectFields,
       },
     },
     orderBy: { id: 'asc' },
-  });
+  })) as CategoryView[];
 };
 
 export const getCategory = async (id: string): Promise<CategoryView | null> => {
-  return db.category.findUnique({
+  return (await db.category.findUnique({
     where: { id: id },
     select: {
       id: true,
       name: true,
       posts: {
-        select: {
-          id: true,
-          title: true,
-          content: true,
-          publishedAt: true,
-          updatedAt: true,
-          author: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-        },
+        select: postSelectFields,
       },
     },
-  });
+  })) as CategoryView | null;
 };
 
 export const addCategory = async (
@@ -68,7 +63,7 @@ export const addCategory = async (
 ): Promise<CategoryView> => {
   const { name } = category;
 
-  return db.category.create({
+  return (await db.category.create({
     data: {
       name,
     },
@@ -76,23 +71,10 @@ export const addCategory = async (
       id: true,
       name: true,
       posts: {
-        select: {
-          id: true,
-          title: true,
-          content: true,
-          publishedAt: true,
-          updatedAt: true,
-          author: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-        },
-      },
+        select: postSelectFields
+      }
     },
-  });
+  })) as CategoryView;
 };
 
 export const editCategory = async (
@@ -101,7 +83,7 @@ export const editCategory = async (
 ): Promise<CategoryView> => {
   const { name } = category;
 
-  return db.category.update({
+  return (await db.category.update({
     where: {
       id: id,
     },
@@ -112,26 +94,20 @@ export const editCategory = async (
       id: true,
       name: true,
       posts: {
-        select: {
-          id: true,
-          title: true,
-          content: true,
-          publishedAt: true,
-          updatedAt: true,
-          author: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-        },
+        select: postSelectFields
       },
     },
-  });
+  })) as CategoryView;
 };
 
 export const deleteCategory = async (id: string): Promise<void> => {
+
+  // Sets all the category field of the respective posts(articles) to null
+  await db.post.updateMany({
+    where: {categoryId: id},
+    data: {categoryId: null}
+  });
+
   await db.category.delete({
     where: { id },
   });

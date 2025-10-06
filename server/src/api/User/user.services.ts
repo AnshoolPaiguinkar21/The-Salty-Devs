@@ -42,7 +42,7 @@ export const fetchUsers = async (): Promise<UserResponse[]> => {
       bio: true,
     },
     orderBy: {
-      id: 'asc',
+      createdAt: 'asc',
     },
   });
 };
