@@ -1,0 +1,18 @@
+Admin credentials:
+{
+  "email":"admin@gmail.com",
+  "password": "admin"
+}
+
+Create posts:
+{
+    "title": "",
+    "authorId": "",
+    "description": "",
+    "content": ""
+}
+
+Update posts:
+{
+      description: "All about India"
+}

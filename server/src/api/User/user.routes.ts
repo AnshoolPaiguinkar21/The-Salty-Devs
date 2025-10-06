@@ -14,6 +14,7 @@ import {
   userIdSchema,
 } from '../../validation/user.validation.ts';
 import { isAdminAuth } from '@middlewares/isAdminAuth.middleware.ts';
+import { authLimiter } from '@middlewares/rateLimit.middleware.ts';
 
 const router = Router();
 
@@ -26,6 +27,7 @@ router.delete(
 router.get('/:id', validateParams(userIdSchema), UserControllers.fetchUser);
 router.post(
   '/login',
+  authLimiter,
   validateBody(loginUserSchema),
   UserControllers.signinUser
 );

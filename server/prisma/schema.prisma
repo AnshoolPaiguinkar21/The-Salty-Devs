@@ -39,7 +39,9 @@ model Post {
   //id        Int       @id @default(autoincrement())
   id          String    @id @default(uuid())
   title       String
+  description String?
   content     String?
+  slug        String?
   published   Boolean   @default(false)
   author      User      @relation(fields: [authorId], references: [id])
   authorId    String
@@ -82,10 +84,8 @@ model Category {
 
 // NEW: Tag Model for many-to-many relationship
 model Tag {
-  //id        Int       @id @default(autoincrement())
   id    String @id @default(uuid())
   name  String @unique
-  slug  String @unique
   posts Post[]
 }
 
