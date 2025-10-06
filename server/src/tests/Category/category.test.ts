@@ -2,6 +2,15 @@ import { addCategory, deleteCategory, editCategory } from '@api/Category/categor
 import { getCategories, getCategory } from '@api/Category/category.services.ts';
 import { db } from '@utils/db.config.ts';
 
+beforeEach(async () => {
+  await db.postViews.deleteMany();
+  await db.comment.deleteMany();
+  await db.post.deleteMany();
+  await db.user.deleteMany();
+});
+afterAll(async () => {
+  await db.$disconnect();
+});
 
 describe('Testing the get categories function', ()=>{
     it('Should return the id, name and posts from each category', async()=>{

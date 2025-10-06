@@ -9,7 +9,7 @@
     "start": "tsx src/server.ts",
     "dev": "nodemon --watch src --ext ts --exec \"tsx src/server.ts\"",
     "prisma:generate": "prisma generate",
-    "test": "dotenv -e .env.test jest "
+    "test": "dotenv -e .env.test jest"
   },
   "repository": {
     "type": "git",

@@ -3,7 +3,7 @@ import { AppError } from '@utils/appError.ts';
 import { HttpStatusCodes } from '@utils/httpStatusCodes.ts';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { Role } from '@prisma/client';
+import { Role} from '@prisma/client';
 import {
   LoginUserInput,
   RegisterUserInput,

@@ -71,7 +71,10 @@ export const getCommentsByPost = async (postId:string, skip:number, take:number)
   }
 };
 
-export const totalComments = await db.comment.count();
+export const totalComments = async (): Promise<number> => {
+  return await db.comment.count();
+};
+
 
 export const getComment = async (
   id: string

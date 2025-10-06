@@ -8,6 +8,18 @@ import { deleteUser } from '@api/User/user.services.ts';
 import { db } from '@utils/db.config.ts';
 import bcrypt from 'bcrypt';
 
+
+beforeEach(async () => {
+  await db.postViews.deleteMany();
+  await db.comment.deleteMany();
+  await db.post.deleteMany();
+  await db.user.deleteMany();
+}); 
+afterAll(async () => {
+  await db.$disconnect();
+});
+
+
 describe('Testing the fetch Users function',()=>{
 
   it('Should fetch all users', async()=>{

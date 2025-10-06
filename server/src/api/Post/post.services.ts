@@ -45,7 +45,7 @@ export type PostUpload = {
   content: string;
   published: boolean;
   authorId: string; //String
-  publishedAt: Date;
+  publishedAt: Date | null;
   updatedAt: Date;
   imageURL?: string;
   //category    Category[]
@@ -107,7 +107,10 @@ export const getPosts = async (
   };
 };
 
-export const totalPosts = await db.post.count();
+export const totalPosts = async (): Promise<number> => {
+  return await db.post.count();
+};
+
 
 export const incrementPostView = async (
   postId: string,
