@@ -75,7 +75,6 @@ describe('Testing the Create Post function', () => {
 })
 
 describe("Testing the update post function", () => {
-
   it("should update post if user is the author", async () => {
     await db.comment.deleteMany();
     await db.post.deleteMany();
@@ -85,9 +84,9 @@ describe("Testing the update post function", () => {
       data: { 
         name: "Eve", 
         email: "eve@example.com", 
-        bio:'hello',
+        bio: "hello",
         password: "123456",
-        role:'ADMIN'
+        role: "ADMIN",
       },
     });
 
@@ -98,16 +97,17 @@ describe("Testing the update post function", () => {
         authorId: user.id, 
         published: true, 
         publishedAt: new Date(), 
-        updatedAt: new Date() 
+        updatedAt: new Date(),
+        slug: "old-title",  
       },
     });
 
-    const updated = await updatePost(post.id, user.id, {
+    const updated = await updatePost(post.slug!, user.id, {
       title: "New Title",
       content: "Updated content",
-      updatedAt: new Date(),
       published: post.published,
       publishedAt: post.publishedAt,
+      updatedAt:new Date(),
       authorId: post.authorId,
     });
 
@@ -117,15 +117,13 @@ describe("Testing the update post function", () => {
     await db.comment.deleteMany();
     await db.post.deleteMany();
     await db.user.deleteMany();
-
   });
 
   it("should throw error if post not found", async () => {
-  await db.comment.deleteMany();     
-  await db.postViews.deleteMany();  
-  await db.post.deleteMany();        
-  await db.user.deleteMany();
-
+    await db.comment.deleteMany();     
+    await db.postViews.deleteMany();  
+    await db.post.deleteMany();        
+    await db.user.deleteMany();
 
     const user = await db.user.create({
       data: { 
@@ -136,37 +134,36 @@ describe("Testing the update post function", () => {
     });
 
     await expect(
-      updatePost("non-existent-id", user.id, {
+      updatePost("non-existent-slug", user.id, {
         title: "x",
         content: "y",
         published: true,
         publishedAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt:new Date(),
         authorId: user.id,
       })
     ).rejects.toThrow("Post not found");
 
-  await db.comment.deleteMany();     
-  await db.postViews.deleteMany();  
-  await db.post.deleteMany();        
-  await db.user.deleteMany();
-
-
+    await db.comment.deleteMany();     
+    await db.postViews.deleteMany();  
+    await db.post.deleteMany();        
+    await db.user.deleteMany();
   });
 
   it("should throw forbidden error if user is not author", async () => {
-  await db.comment.deleteMany();     
-  await db.postViews.deleteMany();  
-  await db.post.deleteMany();        
-  await db.user.deleteMany();
+    await db.comment.deleteMany();     
+    await db.postViews.deleteMany();  
+    await db.post.deleteMany();        
+    await db.user.deleteMany();
 
     const user1 = await db.user.create({
       data: {
-         name: "Author", 
-         email: "author@example.com", 
-         password: "123456" 
-        },
+        name: "Author", 
+        email: "author@example.com", 
+        password: "123456" 
+      },
     });
+
     const user2 = await db.user.create({
       data: { 
         name: "Intruder", 
@@ -182,32 +179,32 @@ describe("Testing the update post function", () => {
         authorId: user1.id, 
         published: true, 
         publishedAt: new Date(), 
-        updatedAt: new Date() 
+        updatedAt: new Date(),
+        slug: "protected-post", 
       },
     });
 
     await expect(
-      updatePost(post.id, user2.id, { 
-       title: "New Title",
-      content: "Updated content",
-      updatedAt: new Date(),
-      published: post.published,
-      publishedAt: post.publishedAt,
-      authorId: post.authorId,
-       })
+      updatePost(post.slug!, user2.id, { 
+        title: "New Title",
+        content: "Updated content",
+        published: post.published,
+        publishedAt: post.publishedAt,
+        updatedAt:new Date(),
+        authorId: post.authorId,
+      })
     ).rejects.toThrow("Forbidden: You are not the author of this post.");
-    
-  await db.comment.deleteMany();     
-  await db.postViews.deleteMany();  
-  await db.post.deleteMany();        
-  await db.user.deleteMany();
 
-
+    await db.comment.deleteMany();     
+    await db.postViews.deleteMany();  
+    await db.post.deleteMany();        
+    await db.user.deleteMany();
   });
 });
 
-describe('Testing the get Post function', ()=>{
-  it('Should get a post by ID', async()=>{
+
+describe('Testing the get Post function', () => {
+  it('Should get a post by slug and increment views correctly', async () => {
     await db.postViews.deleteMany();
     await db.comment.deleteMany();
     await db.post.deleteMany();
@@ -215,60 +212,62 @@ describe('Testing the get Post function', ()=>{
 
     const user = await db.user.create({
       data: {
-        name: "Carol", 
+        name: "Carol",
         email: "carol@example.com",
-        bio:'hello', 
+        bio: 'hello',
         password: "123456",
-        role:'USER'
+        role: 'USER'
       },
     });
 
     const post = await db.post.create({
       data: {
-         title: "Viewed Post", 
-         content: "test content", 
-         authorId: user.id,
-         published: true, 
-         publishedAt: new Date(), 
-         updatedAt: new Date(), 
-         views:0
-        },
+        title: "Viewed Post",
+        slug: "viewed-post", 
+        content: "test content",
+        authorId: user.id,
+        published: true,
+        publishedAt: new Date(),
+        updatedAt: new Date(),
+        views: 0
+      },
     });
 
+    // First fetch should increment views to 1
+    const fetched = await getPost(user.id, post.slug!);
+    expect(fetched).not.toBeNull();
+    expect(fetched?.id).toBe(post.id);
+    expect(fetched?.author.id).toBe(user.id);
 
-  const fetched = await getPost(user.id, post.id);
+    const updatedPost = await db.post.findUnique({ where: { id: post.id } });
+    expect(updatedPost?.views).toBe(1);
 
-  expect(fetched).not.toBeNull();
-  expect(fetched?.id).toBe(post.id);
-  expect(fetched?.author.id).toBe(user.id);
+    // Second fetch by the same user should NOT increment views again
+    await getPost(user.id, post.slug!);
+    const afterSecondView = await db.post.findUnique({ where: { id: post.id } });
+    expect(afterSecondView?.views).toBe(1);
 
-  const updatedPost = await db.post.findUnique({ where: { id: post.id } });
-  expect(updatedPost?.views).toBe(1);
+    // Different user -> should increment to 2
+    const user2 = await db.user.create({
+      data: {
+        name: 'Bob',
+        email: 'bob@example.com',
+        password: '123456',
+        role: 'USER'
+      },
+    });
 
-  
-  await getPost(user.id, post.id);
-  const afterSecondView = await db.post.findUnique({ where: { id: post.id } });
-  expect(afterSecondView?.views).toBe(1); 
-
-  const user2 = await db.user.create({
-    data: { 
-      name: 'Bob', 
-      email: 'bob@example.com', 
-      password: '123456', 
-      role: 'USER' 
-    },
-  });
-
-  await getPost(user2.id, post.id);
-  const afterThirdView = await db.post.findUnique({ where: { id: post.id } });
-  expect(afterThirdView?.views).toBe(2);
+    await getPost(user2.id, post.slug!);
+    const afterThirdView = await db.post.findUnique({ where: { id: post.id } });
+    expect(afterThirdView?.views).toBe(2);
 
     await db.postViews.deleteMany();
     await db.comment.deleteMany();
     await db.post.deleteMany();
     await db.user.deleteMany();
-})
+  });
 });
+
 
 describe("Testing the get Posts function", () => {
  

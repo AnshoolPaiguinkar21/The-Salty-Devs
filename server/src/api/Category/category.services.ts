@@ -20,6 +20,7 @@ export const getCategories = async (): Promise<CategoryView[]> => {
         select: {
           id: true,
           title: true,
+          slug: true,
           content: true,
           publishedAt: true,
           updatedAt: true,
@@ -47,6 +48,7 @@ export const getCategory = async (id: string): Promise<CategoryView | null> => {
         select: {
           id: true,
           title: true,
+          slug: true,
           content: true,
           publishedAt: true,
           updatedAt: true,
@@ -79,6 +81,7 @@ export const addCategory = async (
         select: {
           id: true,
           title: true,
+          slug: true,
           content: true,
           publishedAt: true,
           updatedAt: true,
@@ -115,6 +118,7 @@ export const editCategory = async (
         select: {
           id: true,
           title: true,
+          slug: true,
           content: true,
           publishedAt: true,
           updatedAt: true,
