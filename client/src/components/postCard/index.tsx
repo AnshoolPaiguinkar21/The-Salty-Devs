@@ -10,7 +10,7 @@ interface PostCardProps {
 
 const PostCard = ({ post }: PostCardProps) => {
   return (
-    <Link href={`/articles/${post.id}`}>
+    <Link href={`/articles/${post.slug}`}>
       {' '}
       {/* TODO: Change to post.slug */}
       <article className="group bg-card border border-border p-6 hover:gradient-border transition-all duration-300 h-full flex flex-col">
