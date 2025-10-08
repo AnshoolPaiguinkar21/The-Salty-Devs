@@ -18,7 +18,7 @@ export const getPosts = async (req: Request, res: Response) => {
   try {
     const posts = await PostServices.getPosts(
       Number(req.query.skip) || 0,
-      Number(req.query.take) || PostServices.totalPosts,
+      Number(req.query.take) || await PostServices.totalPosts(),
       req.query.search?.toString() || '' 
     );
     return res.status(HttpStatusCodes.OK).json(posts);

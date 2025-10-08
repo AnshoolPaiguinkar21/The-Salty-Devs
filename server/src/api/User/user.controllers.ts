@@ -8,7 +8,7 @@ import {
   UpdateUserInput,
   UpdatePasswordInput,
 } from '@validation/user.validation.ts';
-import config from 'constants/config.ts';
+import config from '@constants/config.ts';
 
 // Login
 export const signinUser = async (req: Request, res: Response) => {

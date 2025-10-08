@@ -22,15 +22,15 @@ const postSelectFields = {
   updatedAt: true,
   imageURL: true,
   category: {
-    select: {id: true, name:true},
+    select: { id: true, name: true },
   },
   author: {
     select: {
       id: true,
       name: true,
-    }
-  }
-}
+    },
+  },
+};
 
 export const getCategories = async (): Promise<CategoryView[]> => {
   return (await db.category.findMany({
@@ -94,18 +94,17 @@ export const editCategory = async (
       id: true,
       name: true,
       posts: {
-        select: postSelectFields
+        select: postSelectFields,
       },
     },
   })) as CategoryView;
 };
 
 export const deleteCategory = async (id: string): Promise<void> => {
-
   // Sets all the category field of the respective posts(articles) to null
   await db.post.updateMany({
-    where: {categoryId: id},
-    data: {categoryId: null}
+    where: { categoryId: id },
+    data: { categoryId: null },
   });
 
   await db.category.delete({
