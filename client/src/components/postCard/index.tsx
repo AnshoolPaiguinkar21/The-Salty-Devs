@@ -11,20 +11,22 @@ interface PostCardProps {
 const PostCard = ({ post }: PostCardProps) => {
   return (
     <Link href={`/articles/${post.id}`}>
+      {' '}
+      {/* TODO: Change to post.slug */}
       <article className="group bg-card border border-border p-6 hover:gradient-border transition-all duration-300 h-full flex flex-col">
         <div className="space-y-4 flex-1">
           {/* Category and View Count*/}
-          {/* <div className="flex items-center justify-between">
-            <Badge variant="secondary" className="text-xs">
+          <div className="flex items-center justify-between">
+            {/* <Badge variant="secondary" className="text-xs">
               {post.category}
-            </Badge>
-            {viewCount > 0 && (
+            </Badge> */}
+            {post.views > 0 && (
               <div className="flex items-center space-x-1 text-xs text-muted-foreground">
                 <Eye className="h-3 w-3" />
-                <span>{viewCount.toLocaleString()}</span>
+                <span>{post.views.toLocaleString()}</span>
               </div>
             )}
-          </div> */}
+          </div>
 
           {/* Title */}
           <h2 className="text-xl font-bold text-card-foreground group-hover:gradient-text transition-colors line-clamp-2">
