@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as UserControllers from './user.controllers.ts';
+import * as UserController from './user.controllers.ts';
 import { isAuthUser } from '@middlewares/isAuthUser.middleware.ts';
 import { errorHandler } from '@utils/error-handler.ts';
 import {
@@ -18,29 +18,35 @@ import { authLimiter } from '@middlewares/rateLimit.middleware.ts';
 
 const router = Router();
 
-router.get('/all', isAdminAuth, UserControllers.fetchUsers);
+router.get('/all', isAdminAuth, UserController.fetchUsers);
 router.delete(
   '/:id',
   [validateParams(userIdSchema), isAuthUser, isAdminAuth],
-  UserControllers.deleteUser
+  UserController.deleteUser
 );
-router.get('/:id', validateParams(userIdSchema), UserControllers.fetchUser);
+router.get('/:id', validateParams(userIdSchema), UserController.fetchUser);
 router.post(
   '/login',
   authLimiter,
   validateBody(loginUserSchema),
-  UserControllers.signinUser
+  UserController.signinUser
 );
-router.post('/logout', UserControllers.logoutUser);
-router.post(
+router.post('/logout', UserController.logoutUser);
+/*router.post(
   '/register',
   validateBody(registerUserSchema),
-  UserControllers.createUser
-);
+  UserController.createUser
+);*/
+
+
+router.post("/register", validateBody(registerUserSchema), UserController.registerUser);
+
+router.post("/verify-otp", UserController.verifyRegistrationOtp);
+
 router.put(
   '/:id',
   [validateParams(userIdSchema), validateBody(updateUserSchema), isAuthUser],
-  UserControllers.updateUser
+  UserController.updateUser
 );
 router.put(
   '/:id/password',
@@ -49,8 +55,8 @@ router.put(
     validateBody(updatePasswordSchema),
     isAuthUser,
   ],
-  UserControllers.updateUserPassword
+  UserController.updateUserPassword
 );
-router.post('/refresh', UserControllers.refreshToken);
+router.post('/refresh', UserController.refreshToken);
 
 export default router;

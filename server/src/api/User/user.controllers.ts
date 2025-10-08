@@ -9,6 +9,7 @@ import {
   UpdatePasswordInput,
 } from '@validation/user.validation.ts';
 import config from 'constants/config.ts';
+import { AppError } from '@utils/appError.ts';
 
 // Login
 export const signinUser = async (req: Request, res: Response) => {
@@ -98,7 +99,8 @@ export const fetchUser = async (req: Request, res: Response) => {
   }
 };
 
-// Register a new user
+/*
+// Register a new user 
 export const createUser = async (
   req: Request,
   res: Response,
@@ -111,6 +113,43 @@ export const createUser = async (
   } catch (error: any) {
     next(error);
   }
+}; */
+
+// --- Step 1: Handle User Registration (OTP Send) ---
+export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // createUser now handles saving to temp table and sending OTP
+        const result = await UserService.createUser(req.body); 
+        
+        // Return 200 OK or 201 Created to indicate the process started
+        // and the user needs to check their email.
+        return res.status(HttpStatusCodes.CREATED).json(result); 
+    } catch (error: any) {
+        next(error);
+    }
+};
+
+// --- Step 2: Handle OTP Verification (Account Activation) ---
+export const verifyRegistrationOtp = async (req: Request, res: Response, next: NextFunction) => {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+        return next(new AppError('Missing email or OTP for verification.', HttpStatusCodes.BAD_REQUEST));
+    }
+
+    try {
+        // verifyOtp handles: finding temp record, checking expiry/OTP, 
+        // creating permanent user, cleaning up temp record, and generating JWT.
+        const authResponse = await UserService.verifyOtp(email, otp);
+        
+        // Success: User is now authenticated and receives their token
+        return res.status(HttpStatusCodes.OK).json({ 
+            message: 'Account successfully verified and activated.',
+            ...authResponse 
+        });
+    } catch (error: any) {
+        next(error);
+    }
 };
 
 // Update existing user data

@@ -92,3 +92,12 @@ model PostViews {
 
   @@unique([visitorId, postId]) // each user(visitor) can have one view per post(article)
 }
+
+model OtpVerification {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  otp         String
+  expiresAt   DateTime
+  data        String   @db.Text // Stores the JSON string of user data (password, name, role, etc.)
+  createdAt   DateTime @default(now())
+}
