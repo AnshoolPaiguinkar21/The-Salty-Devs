@@ -3,13 +3,13 @@ import { AppError } from '@utils/appError.ts';
 import { HttpStatusCodes } from '@utils/httpStatusCodes.ts';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { Role } from '@prisma/client';
+import { Role} from '@prisma/client';
 import {
   LoginUserInput,
   RegisterUserInput,
   UpdateUserInput,
 } from '@validation/user.validation.ts';
-import config from 'constants/config.ts';
+import config from '@constants/config.ts';
 
 export type User = {
   id: string;
@@ -24,7 +24,8 @@ export type UserResponse = {
   id: string;
   name: string | null;
   email: string;
-  bio: string | null;
+  bio?: string | null;
+  role: Role;
 };
 
 type JWTPayload = {
@@ -40,6 +41,7 @@ export const fetchUsers = async (): Promise<UserResponse[]> => {
       name: true,
       email: true,
       bio: true,
+      role:true,
     },
     orderBy: {
       createdAt: 'asc',
@@ -129,6 +131,7 @@ export const signinUser = async (
       name: findUser.name,
       email: findUser.email, 
       bio: findUser.bio,
+      role:findUser.role,
     },
   };
 };
