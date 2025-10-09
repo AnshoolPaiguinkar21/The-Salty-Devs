@@ -1,4 +1,4 @@
-import { Post } from '@/types';
+import { Post, Category } from '@/types';
 
 // The base URL of your backend API
 const API_BASE_URL =
@@ -30,5 +30,52 @@ export async function getAllPosts(): Promise<{
     console.error('Error fetching posts:', error);
     // In a real app, you'd handle this error more gracefully
     return { posts: [], totalCount: 0 }; // Return an empty array on error
+  }
+}
+
+/**
+ * Fetches a single post by its slug from the backend.
+ */
+export async function getPost(slug: string): Promise<Post | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/posts/${slug}`, {
+      // Improve performance by re-fetching data every 60 seconds
+      next: { revalidate: 60 },
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return null; // Post not found
+      }
+      throw new Error('Failed to fetch post');
+    }
+
+    const post = await response.json();
+    return post;
+  } catch (error) {
+    console.error('Error fetching post:', error);
+    return null; // Return null on error
+  }
+}
+
+/**
+ * Fetches all categories with their associated posts from the backend.
+ */
+export async function getAllCategories(): Promise<Category[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/categories`, {
+      // Improve performance by re-fetching data every 60 seconds
+      next: { revalidate: 60 },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch categories');
+    }
+
+    const categories = await response.json();
+    return categories;
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return []; // Return empty array on error
   }
 }

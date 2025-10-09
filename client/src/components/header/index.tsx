@@ -1,4 +1,6 @@
 import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 import { Menu } from 'lucide-react';
 import {
   Accordion,
@@ -53,8 +55,8 @@ interface HeaderProps {
 
 const Header = ({
   logo = {
-    url: '/',
-    alt: 'logo',
+    url: '/The-Salty-Devs-logo-6.jpg',
+    alt: 'The Salty Devs Logo',
     title: 'The Salty Devs',
   },
   menu = [
@@ -74,11 +76,18 @@ const Header = ({
         <nav className="hidden justify-between lg:flex w-full">
           <div className="flex items-center gap-10">
             {/* Logo */}
-            <a href={logo.url} className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-3">
+              <Image
+                src={logo.url}
+                alt={logo.alt}
+                width={40}
+                height={40}
+                className="rounded-lg"
+              />
               <span className="text-2xl font-bold tracking-tighter leading-none flex items-center">
                 {logo.title}
               </span>
-            </a>
+            </Link>
             <div className="flex items-center">
               <NavigationMenu>
                 <NavigationMenuList className="items-center">
@@ -106,11 +115,18 @@ const Header = ({
         <div className="block lg:hidden">
           <div className="flex items-center justify-between mx-6">
             {/* Logo */}
-            <a href={logo.url} className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src={logo.url}
+                alt={logo.alt}
+                width={32}
+                height={32}
+                className="rounded-md"
+              />
               <span className="text-lg font-semibold tracking-tighter leading-none">
                 {logo.title}
               </span>
-            </a>
+            </Link>
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
@@ -120,11 +136,18 @@ const Header = ({
               <SheetContent className="overflow-y-auto">
                 <SheetHeader>
                   <SheetTitle>
-                    <a href={logo.url} className="flex items-center gap-2">
+                    <Link href="/" className="flex items-center gap-2">
+                      <Image
+                        src={logo.url}
+                        alt={logo.alt}
+                        width={28}
+                        height={28}
+                        className="rounded-md"
+                      />
                       <span className="text-lg font-semibold tracking-tighter">
                         {logo.title}
                       </span>
-                    </a>
+                    </Link>
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-6 p-4">
