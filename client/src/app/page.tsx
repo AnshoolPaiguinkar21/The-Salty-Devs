@@ -1,9 +1,9 @@
 import React from 'react';
-import { getAllPosts } from '@/lib/api';
+import { getPopularPosts } from '@/lib/api';
 import PostCard from '@/components/postCard';
 
 export default async function Home() {
-  const { posts, totalCount } = await getAllPosts();
+  const { posts, totalCount } = await getPopularPosts();
   console.log('Total Posts fetched:', totalCount);
 
   return (
@@ -13,8 +13,8 @@ export default async function Home() {
           Welcome to Our Blog
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Discover insights, tutorials, and thoughts on web development, design,
-          and technology.
+          Discover our most popular insights, tutorials, and thoughts on web
+          development, design, and technology.
         </p>
       </div>
 

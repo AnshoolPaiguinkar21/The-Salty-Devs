@@ -103,9 +103,21 @@ export type PostUpload = {
 export const getPosts = async (
   skip: number,
   take: number,
-  search: string
+  search: string,
+  sortBy: string = 'oldest'
 ): Promise<{ data: PostResponse[]; totalCount: number }> => {
   // console.log(search)
+
+  // Determine sort order based on sortBy parameter
+  let orderBy;
+  if (sortBy === 'latest') {
+    orderBy = { createdAt: 'desc' as const };
+  } else if (sortBy === 'popular') {
+    orderBy = { views: 'desc' as const };
+  } else {
+    orderBy = { createdAt: 'asc' as const };
+  }
+
   const data = await db.post.findMany({
     select: {
       id: true,
@@ -116,6 +128,8 @@ export const getPosts = async (
       publishedAt: true,
       updatedAt: true,
       imageURL: true,
+      views: true,
+      tags: true,
       category: {
         select: { id: true, name: true },
       },
@@ -151,7 +165,7 @@ export const getPosts = async (
       },
       published: true,
     },
-    orderBy: { createdAt: 'asc' },
+    orderBy,
   });
   const totalCount = await db.post.count({ where: { published: true } });
   return {

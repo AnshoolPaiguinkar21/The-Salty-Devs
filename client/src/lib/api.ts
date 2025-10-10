@@ -34,6 +34,64 @@ export async function getAllPosts(): Promise<{
 }
 
 /**
+ * Fetches all published posts sorted by latest first (for articles page).
+ */
+export async function getAllPostsSortedByLatest(): Promise<{
+  posts: Post[];
+  totalCount: number;
+}> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/posts?sortBy=latest`, {
+      // Improve performance by re-fetching data every 60 seconds
+      next: { revalidate: 60 },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch posts');
+    }
+
+    const responseData = await response.json();
+    return {
+      posts: responseData.data, // Extract the 'data' array
+      totalCount: responseData.totalCount,
+    };
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    // In a real app, you'd handle this error more gracefully
+    return { posts: [], totalCount: 0 }; // Return an empty array on error
+  }
+}
+
+/**
+ * Fetches popular posts sorted by views (for home page).
+ */
+export async function getPopularPosts(): Promise<{
+  posts: Post[];
+  totalCount: number;
+}> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/posts?sortBy=popular`, {
+      // Improve performance by re-fetching data every 60 seconds
+      next: { revalidate: 60 },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch posts');
+    }
+
+    const responseData = await response.json();
+    return {
+      posts: responseData.data, // Extract the 'data' array
+      totalCount: responseData.totalCount,
+    };
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    // In a real app, you'd handle this error more gracefully
+    return { posts: [], totalCount: 0 }; // Return an empty array on error
+  }
+}
+
+/**
  * Fetches a single post by its slug from the backend.
  */
 export async function getPost(slug: string): Promise<Post | null> {
