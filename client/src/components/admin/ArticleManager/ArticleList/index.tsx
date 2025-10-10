@@ -21,24 +21,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Eye, Edit, Trash2, MoreHorizontal } from 'lucide-react';
-
-interface Article {
-  id: string;
-  title: string;
-  author: {
-    name: string;
-  };
-  category?: {
-    name: string;
-  };
-  published: boolean;
-  views: number;
-  publishedAt?: string;
-  createdAt: string;
-}
+import { Post } from '@/types';
 
 interface ArticleListProps {
-  articles: Article[];
+  articles: Post[];
   onDelete?: (id: string) => void;
 }
 

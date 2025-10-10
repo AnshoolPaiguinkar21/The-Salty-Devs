@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -39,6 +39,7 @@ import {
   Shield,
   User,
 } from 'lucide-react';
+import { getAdminUsers, deleteUser, updateUser } from '@/lib/api';
 
 interface UserData {
   id: string;
@@ -51,42 +52,21 @@ interface UserData {
   lastActive: string;
 }
 
-// Mock data
-const mockUsers: UserData[] = [
-  {
-    id: '1',
-    name: 'John Doe',
-    email: 'john@example.com',
-    role: 'ADMIN',
-    status: 'active',
-    articlesCount: 12,
-    joinedAt: '2024-01-01',
-    lastActive: '2024-01-15',
-  },
-  {
-    id: '2',
-    name: 'Jane Smith',
-    email: 'jane@example.com',
-    role: 'USER',
-    status: 'active',
-    articlesCount: 8,
-    joinedAt: '2024-01-02',
-    lastActive: '2024-01-14',
-  },
-  {
-    id: '3',
-    name: 'Mike Johnson',
-    email: 'mike@example.com',
-    role: 'USER',
-    status: 'inactive',
-    articlesCount: 5,
-    joinedAt: '2024-01-03',
-    lastActive: '2024-01-10',
-  },
-];
+// Interface for the API response from backend
+interface ApiUserResponse {
+  id: string;
+  name: string | null;
+  email: string;
+  bio?: string | null;
+  role: 'ADMIN' | 'USER';
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 const UserManager = () => {
-  const [users, setUsers] = useState<UserData[]>(mockUsers);
+  const [users, setUsers] = useState<UserData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserData | null>(null);
@@ -96,47 +76,80 @@ const UserManager = () => {
     role: 'USER' as 'ADMIN' | 'USER',
   });
 
+  // Fetch users from API
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoading(true);
+        const response = await getAdminUsers();
+        // Transform API response to UserData format
+        const userData: UserData[] = response.map((user: ApiUserResponse) => ({
+          id: user.id,
+          name: user.name || '', // Handle null name from API
+          email: user.email,
+          role: user.role,
+          status: 'active', // API doesn't return status, defaulting to active
+          articlesCount: 0, // API doesn't return article count, defaulting to 0
+          joinedAt: user.createdAt || new Date().toISOString(),
+          lastActive: user.updatedAt || new Date().toISOString(),
+        }));
+        setUsers(userData);
+        setError(null);
+      } catch (err) {
+        setError('Failed to fetch users');
+        console.error('Error fetching users:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   const filteredUsers = users.filter(
     (user) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (editingUser) {
-      // Update existing user
-      setUsers((prev) =>
-        prev.map((user) =>
-          user.id === editingUser.id
-            ? {
-                ...user,
-                name: formData.name,
-                email: formData.email,
-                role: formData.role,
-              }
-            : user
-        )
-      );
-    } else {
-      // Create new user
-      const newUser: UserData = {
-        id: Date.now().toString(),
-        name: formData.name,
-        email: formData.email,
-        role: formData.role,
-        status: 'active',
-        articlesCount: 0,
-        joinedAt: new Date().toISOString(),
-        lastActive: new Date().toISOString(),
-      };
-      setUsers((prev) => [...prev, newUser]);
-    }
+    try {
+      if (editingUser) {
+        // Update existing user
+        const updatedUser = await updateUser(editingUser.id, {
+          name: formData.name,
+          email: formData.email,
+          role: formData.role,
+        });
+        if (updatedUser) {
+          setUsers((prev) =>
+            prev.map((user) =>
+              user.id === editingUser.id
+                ? {
+                    ...user,
+                    name: formData.name,
+                    email: formData.email,
+                    role: formData.role,
+                  }
+                : user
+            )
+          );
+        }
+      } else {
+        // Note: Create user functionality would need to be implemented in the backend
+        alert('Create user functionality not implemented yet');
+        return;
+      }
 
-    setFormData({ name: '', email: '', role: 'USER' });
-    setEditingUser(null);
-    setIsDialogOpen(false);
+      setFormData({ name: '', email: '', role: 'USER' });
+      setEditingUser(null);
+      setIsDialogOpen(false);
+    } catch (err) {
+      console.error('Error saving user:', err);
+      alert('Failed to save user');
+    }
   };
 
   const handleEdit = (user: UserData) => {
@@ -145,9 +158,19 @@ const UserManager = () => {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this user?')) {
-      setUsers((prev) => prev.filter((user) => user.id !== id));
+      try {
+        const success = await deleteUser(id);
+        if (success) {
+          setUsers((prev) => prev.filter((user) => user.id !== id));
+        } else {
+          alert('Failed to delete user');
+        }
+      } catch (err) {
+        console.error('Error deleting user:', err);
+        alert('Failed to delete user');
+      }
     }
   };
 
@@ -169,6 +192,32 @@ const UserManager = () => {
       )
     );
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Users</h1>
+            <p className="text-muted-foreground">Loading users...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Users</h1>
+            <p className="text-red-500">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

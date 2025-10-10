@@ -6,6 +6,24 @@ export interface Author {
   bio?: string | null;
 }
 
+// Represents a user in the system (for admin operations)
+export interface User {
+  id: string;
+  name: string | null;
+  email: string;
+  bio?: string | null;
+  role: 'ADMIN' | 'USER';
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Represents the response from login API
+export interface LoginResponse {
+  token: string;
+  refreshToken: string;
+  user: User;
+}
+
 // Represents a single comment on a post
 export interface Comment {
   id: string;

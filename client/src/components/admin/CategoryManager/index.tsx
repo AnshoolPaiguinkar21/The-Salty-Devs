@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -30,83 +30,117 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Plus, Edit, Trash2, MoreHorizontal, FolderOpen } from 'lucide-react';
+import {
+  getAllCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+} from '@/lib/api';
+import { Category } from '@/types';
 
-interface Category {
+interface CategoryData {
   id: string;
   name: string;
   postCount: number;
   createdAt: string;
 }
 
-// Mock data
-const mockCategories: Category[] = [
-  {
-    id: '1',
-    name: 'Web Development',
-    postCount: 12,
-    createdAt: '2024-01-01',
-  },
-  {
-    id: '2',
-    name: 'Programming',
-    postCount: 8,
-    createdAt: '2024-01-02',
-  },
-  {
-    id: '3',
-    name: 'Backend',
-    postCount: 5,
-    createdAt: '2024-01-03',
-  },
-  {
-    id: '4',
-    name: 'Frontend',
-    postCount: 7,
-    createdAt: '2024-01-04',
-  },
-];
-
 const CategoryManager = () => {
-  const [categories, setCategories] = useState<Category[]>(mockCategories);
+  const [categories, setCategories] = useState<CategoryData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [editingCategory, setEditingCategory] = useState<CategoryData | null>(
+    null
+  );
   const [formData, setFormData] = useState({ name: '' });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Fetch categories from API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const response = await getAllCategories();
+        // Transform Category[] to CategoryData[] format
+        const categoryData: CategoryData[] = response.map((cat: Category) => ({
+          id: cat.id,
+          name: cat.name,
+          postCount: cat.posts?.length || 0,
+          createdAt: new Date().toISOString(), // API doesn't return createdAt, using current date
+        }));
+        setCategories(categoryData);
+        setError(null);
+      } catch (err) {
+        setError('Failed to fetch categories');
+        console.error('Error fetching categories:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (editingCategory) {
-      // Update existing category
-      setCategories((prev) =>
-        prev.map((cat) =>
-          cat.id === editingCategory.id ? { ...cat, name: formData.name } : cat
-        )
-      );
-    } else {
-      // Create new category
-      const newCategory: Category = {
-        id: Date.now().toString(),
-        name: formData.name,
-        postCount: 0,
-        createdAt: new Date().toISOString(),
-      };
-      setCategories((prev) => [...prev, newCategory]);
-    }
+    try {
+      if (editingCategory) {
+        // Update existing category
+        const updatedCategory = await updateCategory(editingCategory.id, {
+          name: formData.name,
+        });
+        if (updatedCategory) {
+          setCategories((prev) =>
+            prev.map((cat) =>
+              cat.id === editingCategory.id
+                ? { ...cat, name: formData.name }
+                : cat
+            )
+          );
+        }
+      } else {
+        // Create new category
+        const newCategory = await createCategory({ name: formData.name });
+        if (newCategory) {
+          const categoryData: CategoryData = {
+            id: newCategory.id,
+            name: newCategory.name,
+            postCount: 0,
+            createdAt: new Date().toISOString(),
+          };
+          setCategories((prev) => [...prev, categoryData]);
+        }
+      }
 
-    setFormData({ name: '' });
-    setEditingCategory(null);
-    setIsDialogOpen(false);
+      setFormData({ name: '' });
+      setEditingCategory(null);
+      setIsDialogOpen(false);
+    } catch (err) {
+      console.error('Error saving category:', err);
+      alert('Failed to save category');
+    }
   };
 
-  const handleEdit = (category: Category) => {
+  const handleEdit = (category: CategoryData) => {
     setEditingCategory(category);
     setFormData({ name: category.name });
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this category?')) {
-      setCategories((prev) => prev.filter((cat) => cat.id !== id));
+      try {
+        const success = await deleteCategory(id);
+        if (success) {
+          setCategories((prev) => prev.filter((cat) => cat.id !== id));
+        } else {
+          alert('Failed to delete category');
+        }
+      } catch (err) {
+        console.error('Error deleting category:', err);
+        alert('Failed to delete category');
+      }
     }
   };
 
@@ -115,6 +149,32 @@ const CategoryManager = () => {
     setEditingCategory(null);
     setIsDialogOpen(false);
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Categories</h1>
+            <p className="text-muted-foreground">Loading categories...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Categories</h1>
+            <p className="text-red-500">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

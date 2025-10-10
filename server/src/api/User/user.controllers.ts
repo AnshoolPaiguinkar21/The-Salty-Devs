@@ -34,22 +34,24 @@ export const signinUser = async (req: Request, res: Response) => {
     return res.status(HttpStatusCodes.OK).json(existingUser);
   } catch (error: any) {
     const remainingAttempts = req.rateLimit?.remaining ?? null;
-    let customErrorDetails: { message: string, remaining?: number | null } = { message: error.message };
+    let customErrorDetails: { message: string; remaining?: number | null } = {
+      message: error.message,
+    };
     if (
       error.message.includes('Invalid Credentials. Please try again') ||
       error.message.includes('User does not exist') ||
       error.message.includes('Unauthorized: No token provided.')
     ) {
-      if (remainingAttempts!== null){
+      if (remainingAttempts !== null) {
         customErrorDetails.remaining = remainingAttempts;
         customErrorDetails.message = `Invalid credentials. You have ${remainingAttempts} attempts remaining`;
       }
-      
+
       return res
         .status(HttpStatusCodes.UNAUTHORIZED)
         .json({ customErrorDetails });
     }
-    
+
     return res
       .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
       .json(error.message);
@@ -90,6 +92,24 @@ export const fetchUser = async (req: Request, res: Response) => {
 
   try {
     const user = await UserService.fetchUser(id);
+    return res.status(HttpStatusCodes.OK).json(user);
+  } catch (error: any) {
+    return res
+      .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+      .json(error.message);
+  }
+};
+
+// Get current authenticated user
+export const getCurrentUser = async (req: Request, res: Response) => {
+  try {
+    if (!req.user) {
+      return res
+        .status(HttpStatusCodes.UNAUTHORIZED)
+        .json({ message: 'User not authenticated' });
+    }
+
+    const user = await UserService.fetchUser(req.user.id);
     return res.status(HttpStatusCodes.OK).json(user);
   } catch (error: any) {
     return res
@@ -180,11 +200,11 @@ export const refreshToken = async (req: Request, res: Response) => {
             .json({ message: 'Invalid or expired refresh token' });
         }
 
-            const payload = {
-            id: decoded.id,
-            email: decoded.email,
-            role: decoded.role,
-            };
+        const payload = {
+          id: decoded.id,
+          email: decoded.email,
+          role: decoded.role,
+        };
 
         // Generate new access token
         const newAccessToken = jwt.sign(
@@ -193,12 +213,11 @@ export const refreshToken = async (req: Request, res: Response) => {
           { expiresIn: config.ACCESS_TOKEN_EXPIRES_IN }
         );
 
-        
         // (Optional) Generate a new refresh token too
         const newRefreshToken = jwt.sign(
-        payload,
-        config.JWT_REFRESH_SECRET_KEY as string,
-        { expiresIn: config.REFRESH_TOKEN_EXPIRES_IN }
+          payload,
+          config.JWT_REFRESH_SECRET_KEY as string,
+          { expiresIn: config.REFRESH_TOKEN_EXPIRES_IN }
         );
         // Reset cookies
         res.cookie('jwt', newAccessToken, {

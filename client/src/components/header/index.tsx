@@ -1,7 +1,10 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Menu } from 'lucide-react';
+import { Menu, User, LogOut } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   Accordion,
   AccordionContent,
@@ -9,6 +12,13 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -69,6 +79,12 @@ const Header = ({
     signup: { title: 'Sign up', url: '/signup' },
   },
 }: HeaderProps) => {
+  const { user, isAuthenticated, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+  };
+
   return (
     <section className="py-4">
       <div className="container mx-auto w-full">
@@ -101,12 +117,42 @@ const Header = ({
               <DarkModeToggle />
             </div>
             <div className="flex gap-2">
-              <Button asChild variant="outline">
-                <a href={auth.login.url}>{auth.login.title}</a>
-              </Button>
-              <Button asChild>
-                <a href={auth.signup.url}>{auth.signup.title}</a>
-              </Button>
+              {isAuthenticated ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="flex items-center gap-2"
+                    >
+                      <User className="h-4 w-4" />
+                      {user?.name || user?.email}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {user?.role === 'ADMIN' && (
+                      <>
+                        <DropdownMenuItem asChild>
+                          <Link href="/admin">Admin Dashboard</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <>
+                  <Button asChild variant="outline">
+                    <Link href={auth.login.url}>{auth.login.title}</Link>
+                  </Button>
+                  <Button asChild>
+                    <Link href={auth.signup.url}>{auth.signup.title}</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </nav>
@@ -160,12 +206,36 @@ const Header = ({
                   </Accordion>
 
                   <div className="flex flex-col gap-3">
-                    <Button asChild variant="outline">
-                      <a href={auth.login.url}>{auth.login.title}</a>
-                    </Button>
-                    <Button asChild>
-                      <a href={auth.signup.url}>{auth.signup.title}</a>
-                    </Button>
+                    {isAuthenticated ? (
+                      <>
+                        <div className="flex items-center gap-2 p-2 border rounded">
+                          <User className="h-4 w-4" />
+                          <span className="text-sm">
+                            {user?.name || user?.email}
+                          </span>
+                        </div>
+                        {user?.role === 'ADMIN' && (
+                          <Button asChild variant="outline">
+                            <Link href="/admin">Admin Dashboard</Link>
+                          </Button>
+                        )}
+                        <Button onClick={handleLogout} variant="outline">
+                          <LogOut className="h-4 w-4 mr-2" />
+                          Logout
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button asChild variant="outline">
+                          <Link href={auth.login.url}>{auth.login.title}</Link>
+                        </Button>
+                        <Button asChild>
+                          <Link href={auth.signup.url}>
+                            {auth.signup.title}
+                          </Link>
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               </SheetContent>
