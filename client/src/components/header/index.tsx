@@ -1,5 +1,10 @@
+'use client';
+
 import React from 'react';
-import { Menu } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Menu, User, LogOut } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   Accordion,
   AccordionContent,
@@ -7,6 +12,13 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -53,8 +65,8 @@ interface HeaderProps {
 
 const Header = ({
   logo = {
-    url: '/',
-    alt: 'logo',
+    url: '/The-Salty-Devs-logo-6.jpg',
+    alt: 'The Salty Devs Logo',
     title: 'The Salty Devs',
   },
   menu = [
@@ -67,6 +79,12 @@ const Header = ({
     signup: { title: 'Sign up', url: '/signup' },
   },
 }: HeaderProps) => {
+  const { user, isAuthenticated, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+  };
+
   return (
     <section className="py-4">
       <div className="container mx-auto w-full">
@@ -74,11 +92,18 @@ const Header = ({
         <nav className="hidden justify-between lg:flex w-full">
           <div className="flex items-center gap-10">
             {/* Logo */}
-            <a href={logo.url} className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-3">
+              <Image
+                src={logo.url}
+                alt={logo.alt}
+                width={40}
+                height={40}
+                className="rounded-lg"
+              />
               <span className="text-2xl font-bold tracking-tighter leading-none flex items-center">
                 {logo.title}
               </span>
-            </a>
+            </Link>
             <div className="flex items-center">
               <NavigationMenu>
                 <NavigationMenuList className="items-center">
@@ -92,12 +117,42 @@ const Header = ({
               <DarkModeToggle />
             </div>
             <div className="flex gap-2">
-              <Button asChild variant="outline">
-                <a href={auth.login.url}>{auth.login.title}</a>
-              </Button>
-              <Button asChild>
-                <a href={auth.signup.url}>{auth.signup.title}</a>
-              </Button>
+              {isAuthenticated ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="flex items-center gap-2"
+                    >
+                      <User className="h-4 w-4" />
+                      {user?.name || user?.email}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {user?.role === 'ADMIN' && (
+                      <>
+                        <DropdownMenuItem asChild>
+                          <Link href="/admin">Admin Dashboard</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <>
+                  <Button asChild variant="outline">
+                    <Link href={auth.login.url}>{auth.login.title}</Link>
+                  </Button>
+                  <Button asChild>
+                    <Link href={auth.signup.url}>{auth.signup.title}</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </nav>
@@ -106,11 +161,18 @@ const Header = ({
         <div className="block lg:hidden">
           <div className="flex items-center justify-between mx-6">
             {/* Logo */}
-            <a href={logo.url} className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src={logo.url}
+                alt={logo.alt}
+                width={32}
+                height={32}
+                className="rounded-md"
+              />
               <span className="text-lg font-semibold tracking-tighter leading-none">
                 {logo.title}
               </span>
-            </a>
+            </Link>
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
@@ -120,11 +182,18 @@ const Header = ({
               <SheetContent className="overflow-y-auto">
                 <SheetHeader>
                   <SheetTitle>
-                    <a href={logo.url} className="flex items-center gap-2">
+                    <Link href="/" className="flex items-center gap-2">
+                      <Image
+                        src={logo.url}
+                        alt={logo.alt}
+                        width={28}
+                        height={28}
+                        className="rounded-md"
+                      />
                       <span className="text-lg font-semibold tracking-tighter">
                         {logo.title}
                       </span>
-                    </a>
+                    </Link>
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-6 p-4">
@@ -137,12 +206,36 @@ const Header = ({
                   </Accordion>
 
                   <div className="flex flex-col gap-3">
-                    <Button asChild variant="outline">
-                      <a href={auth.login.url}>{auth.login.title}</a>
-                    </Button>
-                    <Button asChild>
-                      <a href={auth.signup.url}>{auth.signup.title}</a>
-                    </Button>
+                    {isAuthenticated ? (
+                      <>
+                        <div className="flex items-center gap-2 p-2 border rounded">
+                          <User className="h-4 w-4" />
+                          <span className="text-sm">
+                            {user?.name || user?.email}
+                          </span>
+                        </div>
+                        {user?.role === 'ADMIN' && (
+                          <Button asChild variant="outline">
+                            <Link href="/admin">Admin Dashboard</Link>
+                          </Button>
+                        )}
+                        <Button onClick={handleLogout} variant="outline">
+                          <LogOut className="h-4 w-4 mr-2" />
+                          Logout
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button asChild variant="outline">
+                          <Link href={auth.login.url}>{auth.login.title}</Link>
+                        </Button>
+                        <Button asChild>
+                          <Link href={auth.signup.url}>
+                            {auth.signup.title}
+                          </Link>
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               </SheetContent>

@@ -19,6 +19,7 @@ import { authLimiter } from '@middlewares/rateLimit.middleware.ts';
 const router = Router();
 
 router.get('/all', isAdminAuth, UserControllers.fetchUsers);
+router.get('/me', isAuthUser, UserControllers.getCurrentUser);
 router.delete(
   '/:id',
   [validateParams(userIdSchema), isAuthUser, isAdminAuth],
