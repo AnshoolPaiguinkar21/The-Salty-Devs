@@ -3,6 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import ArticleForm from '@/components/admin/ArticleManager/ArticleForm';
+import { ArticleFormData } from '@/types';
 
 interface EditArticlePageProps {
   params: Promise<{
@@ -35,7 +36,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
     published: true,
   };
 
-  const handleSubmit = (data: any) => {
+  const handleSubmit = (data: ArticleFormData) => {
     console.log('Updating article:', id, data);
     // Here you would call your API to update the article
     // For now, just redirect back to articles list

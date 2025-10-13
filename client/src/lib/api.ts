@@ -416,7 +416,9 @@ export async function loginUser(credentials: {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to login');
+      const errorText = await response.text();
+      console.error('Login failed:', errorText);
+      throw new Error(`Failed to login: ${response.status}`);
     }
 
     return await response.json();
@@ -433,16 +435,24 @@ export async function registerUser(userData: {
   name: string;
   email: string;
   password: string;
-}): Promise<LoginResponse | null> {
+}): Promise<User | null> {
   try {
+    // Add bio field as required by backend schema
+    const registrationData = {
+      ...userData,
+      bio: '', // Optional field, send empty string
+    };
+
     const response = await fetch(`${API_BASE_URL}/user/register`, {
       method: 'POST',
       headers: getAuthHeaders(),
       credentials: 'include',
-      body: JSON.stringify(userData),
+      body: JSON.stringify(registrationData),
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Registration failed:', errorText);
       throw new Error('Failed to register');
     }
 

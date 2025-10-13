@@ -14,12 +14,21 @@ const app = express();
 app.use(helmet()); // For security headers
 app.use(morgan('dev')); // For request logging and development
 
+// CORS configuration
+app.use(
+  cors({
+    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(limiter)
+app.use(limiter);
 app.use(routes);
 app.use(errorHandler);
 
 export default app;
-

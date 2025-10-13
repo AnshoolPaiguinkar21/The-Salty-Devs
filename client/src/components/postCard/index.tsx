@@ -20,10 +20,10 @@ const PostCard = ({ post }: PostCardProps) => {
             {/* <Badge variant="secondary" className="text-xs">
               {post.category}
             </Badge> */}
-            {post.views > 0 && (
+            {(post.views ?? 0) > 0 && (
               <div className="flex items-center space-x-1 text-xs text-muted-foreground">
                 <Eye className="h-3 w-3" />
-                <span>{post.views.toLocaleString()}</span>
+                <span>{(post.views ?? 0).toLocaleString()}</span>
               </div>
             )}
           </div>
@@ -53,7 +53,7 @@ const PostCard = ({ post }: PostCardProps) => {
           </div>
 
           {/* Tags */}
-          {post.tags?.length > 0 && (
+          {post.tags && post.tags.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {post.tags.slice(0, 3).map((tag) => (
                 <Badge key={tag} variant="outline" className="text-xs">

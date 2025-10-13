@@ -24,6 +24,16 @@ export interface LoginResponse {
   user: User;
 }
 
+// Represents article form data
+export interface ArticleFormData {
+  title: string;
+  content: string;
+  description: string;
+  categoryId: string;
+  tags: string[];
+  published: boolean;
+}
+
 // Represents a single comment on a post
 export interface Comment {
   id: string;

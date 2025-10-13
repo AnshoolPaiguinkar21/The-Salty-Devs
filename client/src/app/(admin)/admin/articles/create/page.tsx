@@ -3,6 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import ArticleForm from '@/components/admin/ArticleManager/ArticleForm';
+import { ArticleFormData } from '@/types';
 
 export default function CreateArticle() {
   const router = useRouter();
@@ -14,7 +15,7 @@ export default function CreateArticle() {
     { id: '4', name: 'Frontend' },
   ];
 
-  const handleSubmit = (data: any) => {
+  const handleSubmit = (data: ArticleFormData) => {
     console.log('Creating article:', data);
     // Here you would call your API to create the article
     // For now, just redirect back to articles list

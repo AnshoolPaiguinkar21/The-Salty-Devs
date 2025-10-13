@@ -24,6 +24,7 @@ import {
   Users,
   FolderOpen,
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface AdminHeaderProps {
   onMenuToggle?: () => void;
@@ -31,6 +32,11 @@ interface AdminHeaderProps {
 
 const AdminHeader = ({ onMenuToggle }: AdminHeaderProps) => {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   const navigationItems = [
     { href: '/admin', label: 'Dashboard', icon: Home },
@@ -111,7 +117,9 @@ const AdminHeader = ({ onMenuToggle }: AdminHeaderProps) => {
                 <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
                   <User className="h-4 w-4" />
                 </div>
-                <span className="hidden sm:inline">Admin User</span>
+                <span className="hidden sm:inline">
+                  {user?.name || user?.email}
+                </span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
@@ -133,7 +141,10 @@ const AdminHeader = ({ onMenuToggle }: AdminHeaderProps) => {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="flex items-center gap-2 text-destructive">
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="flex items-center gap-2 text-destructive cursor-pointer"
+              >
                 <LogOut className="h-4 w-4" />
                 Logout
               </DropdownMenuItem>

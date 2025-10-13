@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
+import { ArticleFormData } from '@/types';
 
 interface ArticleFormProps {
   articleId?: string;
@@ -21,12 +22,11 @@ interface ArticleFormProps {
     published: boolean;
   };
   categories?: { id: string; name: string }[];
-  onSubmit?: (data: any) => void;
+  onSubmit?: (data: ArticleFormData) => void;
   onCancel?: () => void;
 }
 
 const ArticleForm = ({
-  articleId,
   mode,
   initialData,
   categories = [],
@@ -44,7 +44,10 @@ const ArticleForm = ({
 
   const [newTag, setNewTag] = useState('');
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (
+    field: keyof ArticleFormData,
+    value: string | boolean | string[]
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,

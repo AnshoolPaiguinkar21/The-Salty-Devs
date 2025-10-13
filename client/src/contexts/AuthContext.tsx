@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginUser, logoutUser, getCurrentUser, registerUser } from '@/lib/api';
-import { User, LoginResponse } from '@/types';
+import { User } from '@/types';
 
 interface AuthContextType {
   user: User | null;
@@ -102,11 +102,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsLoading(true);
       const response = await registerUser({ name, email, password });
 
-      if (response && response.user) {
-        setUser(response.user);
+      if (response) {
+        // Registration returns user object directly, not wrapped in response
+        const user = response.user || response; // Handle both formats
+        setUser(user);
 
         // Redirect based on user role (new users are typically regular users)
-        if (response.user.role === 'ADMIN') {
+        if (user.role === 'ADMIN') {
           router.push('/admin');
         } else {
           router.push('/'); // Regular users go to home page

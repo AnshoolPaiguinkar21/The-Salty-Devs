@@ -80,7 +80,7 @@ const ArticleList = ({ articles, onDelete }: ArticleListProps) => {
                     {article.published ? 'Published' : 'Draft'}
                   </Badge>
                 </TableCell>
-                <TableCell>{article.views.toLocaleString()}</TableCell>
+                <TableCell>{article.views?.toLocaleString() || '0'}</TableCell>
                 <TableCell>
                   {article.publishedAt
                     ? new Date(article.publishedAt).toLocaleDateString()
