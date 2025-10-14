@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import React from 'react';
 import { ThemeProvider } from 'next-themes';
-import Header from '@/components/header';
-import Footer from '@/components/footer';
+import ConditionalLayout from '@/components/ConditionalLayout';
+import { AuthProvider } from '@/contexts/AuthContext';
 import '../styles/globals.css';
 
 export const metadata: Metadata = {
@@ -24,11 +24,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="min-h-screen flex flex-col">
-            <Header />
-            <main className="flex-1 pt-20">{children}</main>
-            <Footer />
-          </div>
+          <AuthProvider>
+            <ConditionalLayout>{children}</ConditionalLayout>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

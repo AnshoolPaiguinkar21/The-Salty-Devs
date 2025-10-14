@@ -14,12 +14,13 @@ declare module 'express-serve-static-core' {
 }
 
 export const getPosts = async (req: Request, res: Response) => {
-//   console.log(req.query.search || '' );
+  //   console.log(req.query.search || '' );
   try {
     const posts = await PostServices.getPosts(
       Number(req.query.skip) || 0,
-      Number(req.query.take) || await PostServices.totalPosts(),
-      req.query.search?.toString() || '' 
+      Number(req.query.take) || (await PostServices.totalPosts()),
+      req.query.search?.toString() || '',
+      req.query.sortBy?.toString() || 'oldest'
     );
     return res.status(HttpStatusCodes.OK).json(posts);
   } catch (error: any) {

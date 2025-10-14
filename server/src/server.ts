@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import app from './app.ts';
-import config from 'constants/config.ts';
+import config from './constants/config.ts';
 
-const port = config.PORT   //process.env.PORT || 4000;
+const port = config.PORT; //process.env.PORT || 4000;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

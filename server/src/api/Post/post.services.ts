@@ -52,7 +52,7 @@ export type PostRead = {
 type PostCategory = {
   id: string;
   name: string;
-}
+};
 
 export type PostResponse = {
   id: string;
@@ -96,16 +96,28 @@ export type PostUpload = {
   publishedAt: Date | null;
   updatedAt: Date;
   imageURL?: string;
-  categoryId?: string; 
-  tags?:string[];
+  categoryId?: string;
+  tags?: string[];
 };
 
 export const getPosts = async (
   skip: number,
   take: number,
-  search: string
+  search: string,
+  sortBy: string = 'oldest'
 ): Promise<{ data: PostResponse[]; totalCount: number }> => {
   // console.log(search)
+
+  // Determine sort order based on sortBy parameter
+  let orderBy;
+  if (sortBy === 'latest') {
+    orderBy = { createdAt: 'desc' as const };
+  } else if (sortBy === 'popular') {
+    orderBy = { views: 'desc' as const };
+  } else {
+    orderBy = { createdAt: 'asc' as const };
+  }
+
   const data = await db.post.findMany({
     select: {
       id: true,
@@ -116,8 +128,10 @@ export const getPosts = async (
       publishedAt: true,
       updatedAt: true,
       imageURL: true,
+      views: true,
+      tags: true,
       category: {
-        select: {id:true, name:true}
+        select: { id: true, name: true },
       },
       author: {
         select: {
@@ -151,7 +165,7 @@ export const getPosts = async (
       },
       published: true,
     },
-    orderBy: { createdAt: 'asc' },
+    orderBy,
   });
   const totalCount = await db.post.count({ where: { published: true } });
   return {
@@ -163,7 +177,6 @@ export const getPosts = async (
 export const totalPosts = async (): Promise<number> => {
   return await db.post.count();
 };
-
 
 export const incrementPostView = async (
   postId: string,
@@ -215,8 +228,9 @@ export const getPost = async (
       views: true,
       category: {
         select: {
-          id:true, name:true
-        }
+          id: true,
+          name: true,
+        },
       },
       author: {
         select: {
@@ -247,7 +261,8 @@ export const getPost = async (
     return null;
   }
 
-  if (userId) {
+  // Only track views for authenticated users (not guests)
+  if (userId && userId !== 'guest') {
     await incrementPostView(post.id, userId);
   }
 
@@ -265,7 +280,7 @@ export const createPost = async (post: PostUpload): Promise<PostResponse> => {
     updatedAt,
     imageURL,
     categoryId,
-    tags
+    tags,
   } = post;
 
   if (!authorId || !title || !content) {
@@ -295,7 +310,7 @@ export const createPost = async (post: PostUpload): Promise<PostResponse> => {
       publishedAt,
       updatedAt,
       imageURL,
-      tags
+      tags,
     },
     select: {
       id: true,
@@ -322,7 +337,15 @@ export const updatePost = async (
   userId: string,
   post: PostUpload
 ): Promise<PostResponse> => {
-  const { title, description, content, published, updatedAt, categoryId, tags } = post;
+  const {
+    title,
+    description,
+    content,
+    published,
+    updatedAt,
+    categoryId,
+    tags,
+  } = post;
 
   const existingPost = await db.post.findFirst({
     where: { slug },
@@ -372,11 +395,12 @@ export const updatePost = async (
       published: true,
       publishedAt: true,
       updatedAt: true,
-      tags:true,
+      tags: true,
       category: {
         select: {
-          id:true, name:true
-        }
+          id: true,
+          name: true,
+        },
       },
       author: {
         select: {
